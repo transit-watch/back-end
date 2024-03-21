@@ -1,15 +1,16 @@
 package transit.transitwatch.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import transit.transitwatch.dto.BusRouteDTO;
 
 import java.sql.Timestamp;
+
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@NoArgsConstructor
 @Entity
 @Table(name = "BUS_ROUTE")
 public class BusRoute {
@@ -26,7 +27,7 @@ public class BusRoute {
     private String routeName;
 
     @Column(name = "ROUTE_ORDER")
-    private Integer routeOrder;
+    private int routeOrder;
 
     @Column(name = "STATION_ID", length = 9)
     private String stationId;
@@ -35,10 +36,10 @@ public class BusRoute {
     private String arsId;
 
     @Column(name = "X_LATITUDE")
-    private Double xLatitude;
+    private double xLatitude;
 
     @Column(name = "Y_LONGITUDE")
-    private Double yLongitude;
+    private double yLongitude;
 
     @CreationTimestamp
     @Column(name = "REGISTER_DATE", nullable = false, updatable = false)
@@ -48,13 +49,13 @@ public class BusRoute {
     @Column(name = "EDIT_DATE")
     private Timestamp editDate;
 
-    public void setBusRouteDTO(BusRouteDTO busRouteDTO){
-        this.routeId = busRouteDTO.getRouteId();
-        this.routeName = busRouteDTO.getRouteName();
-        this.routeOrder = busRouteDTO.getRouteOrder();
-        this.stationId = busRouteDTO.getStationId();
-        this.arsId = busRouteDTO.getArsId();
-        this.xLatitude = busRouteDTO.getXLatitude();
-        this.yLongitude = busRouteDTO.getYLongitude();
+    public BusRoute(String routeId, String routeName, int routeOrder, String stationId, String arsId, double xLatitude, double yLongitude) {
+        this.routeId = routeId;
+        this.routeName = routeName;
+        this.routeOrder = routeOrder;
+        this.stationId = stationId;
+        this.arsId = arsId;
+        this.xLatitude = xLatitude;
+        this.yLongitude = yLongitude;
     }
 }

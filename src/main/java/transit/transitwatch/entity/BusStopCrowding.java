@@ -4,13 +4,15 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
-@Getter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 @Table(name = "BUS_STOP_CROWDING")
 public class BusStopCrowding {
@@ -27,10 +29,10 @@ public class BusStopCrowding {
     private Timestamp sendUtcTime;
 
     @Column(name = "Y_LONGITUDE")
-    private Double yLongitude;
+    private double yLongitude;
 
     @Column(name = "X_LATITUDE")
-    private Double xLatitude;
+    private double xLatitude;
 
     @Column(name = "LINK_ID", length = 30)
     private String linkId;
@@ -63,4 +65,26 @@ public class BusStopCrowding {
     @UpdateTimestamp
     @Column(name = "EDIT_DATE")
     private Timestamp editDate;
+
+    public BusStopCrowding(Long id, String itisCd, Timestamp sendUtcTime, double yLongitude, double xLatitude, String linkId, String arsId, String sendPacketYear, String sendPacketMonth, String sendPacketDay, String sendPacketTime, String sendPacketMilisecond, Timestamp recordDate, Timestamp registerDate, Timestamp editDate) {
+        this.id = id;
+        this.itisCd = itisCd;
+        this.sendUtcTime = sendUtcTime;
+        this.yLongitude = yLongitude;
+        this.xLatitude = xLatitude;
+        this.linkId = linkId;
+        this.arsId = arsId;
+        this.sendPacketYear = sendPacketYear;
+        this.sendPacketMonth = sendPacketMonth;
+        this.sendPacketDay = sendPacketDay;
+        this.sendPacketTime = sendPacketTime;
+        this.sendPacketMilisecond = sendPacketMilisecond;
+        this.recordDate = recordDate;
+        this.registerDate = registerDate;
+        this.editDate = editDate;
+    }
+
+    //    @ManyToOne
+//    @JoinColumn(name = "ARS_ID")
+//    private BusStopInfo busStopInfo;
 }

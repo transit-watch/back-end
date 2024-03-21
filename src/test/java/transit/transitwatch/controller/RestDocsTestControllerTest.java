@@ -14,4 +14,6 @@ class RestDocsTestControllerTest extends AbstractRestDocsTests {
     void 테스트() throws Exception {
         mockMvc.perform(get("/rest")).andExpect(status().isOk());
     }
+
+
 }
