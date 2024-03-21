@@ -8,28 +8,32 @@ import transit.transitwatch.service.BusStopCrowdingService;
 @RestController
 @RequiredArgsConstructor
 public class BusStopCrowdingController {
+
     private final BusStopCrowdingService busStopCrowdingService;
 
     /*
     * 버스 정류장 혼잡도 api 조회 후 저장하기
     * */
     @GetMapping("/api/save/busStopCrowding")
-    public String saveBusStopCrowding() {
-        String apiKey = "d1a183b8-ea3c-4190-8778-67fa9b6b41a1";
-        String pageNo = "1";
-        String numOfRows = "30";
-        String url = "https://t-data.seoul.go.kr/apig/apiman-gateway/tapi/v2xBusStationCrowdedInformation/1.0" +
-                "?pageNo=" + pageNo +
-                "&numOfRows=" + numOfRows +
-                "&apikey=" + apiKey;
-
-        String result;
-
+    public void saveBusStopCrowding() {
         try {
-            result = busStopCrowdingService.getApi(url);
+            busStopCrowdingService.saveBusStopCrowdingApi();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return result;
+    }
+
+    /*
+     * 버스 정류장 혼잡도 테이블에서 조회해오기
+     * */
+    @GetMapping("/api/busStopCrowding")
+    public void selectBusStopCrowding() {
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//
+//        List<BusStopCrowding> resultList = busStopCrowdingService.selectBusStopCrowding(id);
+//
+//        String result = gson.toJson(resultList);
+//
+//        return result;
     }
 }

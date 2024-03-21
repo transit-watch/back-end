@@ -8,8 +8,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-@Getter
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 @Table(name = "NEAR_BY_BUS_STOP")
 public class NearByBusStop {
@@ -23,16 +24,16 @@ public class NearByBusStop {
     private String stationId;
 
     @Column(name = "X_LATITUDE")
-    private Double xLatitude;
+    private double xLatitude;
 
     @Column(name = "Y_LONGITUDE")
-    private Double yLongitude;
+    private double yLongitude;
 
     @Column(name = "ARS_ID", length = 5)
     private String arsId;
 
     @Column(name = "DISTANCE")
-    private Integer distance;
+    private int distance;
 
     @CreationTimestamp
     @Column(name = "REGISTER_DATE", nullable = false, updatable = false)
@@ -41,4 +42,12 @@ public class NearByBusStop {
     @UpdateTimestamp
     @Column(name = "EDIT_DATE")
     private Timestamp editDate;
+
+    public NearByBusStop(String stationId, double xLatitude, double yLongitude, String arsId, int distance) {
+        this.stationId = stationId;
+        this.xLatitude = xLatitude;
+        this.yLongitude = yLongitude;
+        this.arsId = arsId;
+        this.distance = distance;
+    }
 }

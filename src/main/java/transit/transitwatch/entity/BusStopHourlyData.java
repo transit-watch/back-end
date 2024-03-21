@@ -8,8 +8,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-@Getter
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 @Table(name = "BUS_STOP_HOURLY_DATA")
 public class BusStopHourlyData {
@@ -20,16 +21,16 @@ public class BusStopHourlyData {
     private Long id;
 
     @Column(name = "STATISTICS_ID")
-    private Integer statisticsId;
+    private int statisticsId;
 
     @Column(name = "HOUR")
-    private Integer hour;
+    private int hour;
 
     @Column(name = "UP_PEOPLE")
-    private Integer upPeople;
+    private int upPeople;
 
     @Column(name = "DOWN_PEOPLE")
-    private Integer downPeople;
+    private int downPeople;
 
     @CreationTimestamp
     @Column(name = "REGISTER_DATE", nullable = false, updatable = false)
@@ -38,4 +39,11 @@ public class BusStopHourlyData {
     @UpdateTimestamp
     @Column(name = "EDIT_DATE")
     private Timestamp editDate;
+
+    public BusStopHourlyData(int statisticsId, int hour, int upPeople, int downPeople) {
+        this.statisticsId = statisticsId;
+        this.hour = hour;
+        this.upPeople = upPeople;
+        this.downPeople = downPeople;
+    }
 }

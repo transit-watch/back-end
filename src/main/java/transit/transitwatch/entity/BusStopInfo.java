@@ -1,16 +1,17 @@
 package transit.transitwatch.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import transit.transitwatch.dto.BusStopInfoDTO;
 
 import java.sql.Timestamp;
 
+
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@NoArgsConstructor
 @Entity
 @Table(name = "BUS_STOP_INFO")
 public class BusStopInfo {
@@ -33,10 +34,10 @@ public class BusStopInfo {
     private String linkId;
 
     @Column(name = "X_LATITUDE")
-    private Double xLatitude;
+    private double xLatitude;
 
     @Column(name = "Y_LONGITUDE")
-    private Double yLongitude;
+    private double yLongitude;
 
     @Column(name = "USE_YN")
     private char useYN; // 사용 여부 (1: 사용, 0: 미사용)
@@ -52,14 +53,14 @@ public class BusStopInfo {
     @Column(name = "EDIT_DATE")
     private Timestamp editDate;
 
-    public void setBusStopInfoDTO(BusStopInfoDTO busStopInfoDTO){
-        this.stationId = busStopInfoDTO.getStationId();
-        this.stationName = busStopInfoDTO.getStationName();
-        this.arsId = busStopInfoDTO.getArsId();
-        this.linkId = busStopInfoDTO.getLinkId();
-        this.xLatitude = busStopInfoDTO.getXLatitude();
-        this.yLongitude = busStopInfoDTO.getYLongitude();
-        this.useYN = busStopInfoDTO.getUseYN();
-        this.virtualBusStopYN = busStopInfoDTO.getVirtualBusStopYN();
+    public BusStopInfo(String stationId, String stationName, String arsId, String linkId, double xLatitude, double yLongitude, char useYN, char virtualBusStopYN) {
+        this.stationId = stationId;
+        this.stationName = stationName;
+        this.arsId = arsId;
+        this.linkId = linkId;
+        this.xLatitude = xLatitude;
+        this.yLongitude = yLongitude;
+        this.useYN = useYN;
+        this.virtualBusStopYN = virtualBusStopYN;
     }
 }
