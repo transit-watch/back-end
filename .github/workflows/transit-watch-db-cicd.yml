@@ -9,7 +9,7 @@ on:
       - 'db/**'
 
 jobs:
-  mysql-db:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -68,16 +68,17 @@ jobs:
           script: |
             cd /root/compose
             sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-            sudo docker-compose -f docker-compose.yml down --rmi all
+            sudo docker rm -f $(docker ps -aq)
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/transit-watch-mysql:${{ github.sha }}
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/transit-watch-redis:${{ github.sha }}
-            sudo docker-compose -f docker-compose.yml up -d
-            sudo docker image prune -f 
-            
+            sudo INPUT_TAG=${{ github.sha }} MYSQL_ROOT_PASSWORD=${{ secrets.ROOT_PASSWORD_MYSQL }} docker-compose -f docker-compose.yml up -d
+            sudo docker image prune -f        
 
   ## slack
   action-slack:
-    needs: CI-CD
+    needs:
+      - build-and-push
+      - deploy
     runs-on: ubuntu-latest
     steps:
       - name: Slack Alarm

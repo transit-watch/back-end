@@ -10,13 +10,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 현재 리포지토리를 체크아웃
       - name: Checkout Repository
-        uses: actions/checkout@v2
-        # 현재 리포지토리를 체크아웃
+        uses: actions/checkout@v4
 
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # yml 생성
+      - name: Make application.yml
+        run: |
+          # spring의 resources 경로로 이동
+          cd ./src/main/resources 
+
+          # application.yml 파일 생성
+          touch ./application.yml 
+
+          # GitHub-Actions에서 설정한 값을 application.yml  파일에 쓰기
+          echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./application.yml
+        shell: bash
+
+#      - name: Upload application.yml
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: my-artifact
+#          path: |
+#            src/main/resources
+
+      # Spring Boot 애플리케이션 빌드
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Build with Gradle
+        run: ./gradlew build -x test -x asciidoctor -x copyDocument
+
+      # Docker Buildx를 설정
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-        # Docker Buildx를 설정
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -49,12 +82,15 @@ jobs:
           script: |
             cd /root/compose
             sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-            sudo docker-compose -f docker-compose.yml down --rmi all
+            sudo docker rm -f $(docker ps -aq)
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/transit-watch-backend:${{ github.sha }}
-            sudo docker-compose -f docker-compose.yml up -d
+            sudo docker run -d --name transit-watch-backend -p 8080:8080 transitwatch/transit-watch-backend:${{ github.sha }}
+            sudo docker image prune -f
   ## slack
   action-slack:
-    needs: CI-CD
+    needs:
+      - build-and-push
+      - deploy
     runs-on: ubuntu-latest
     steps:
       - name: Slack Alarm

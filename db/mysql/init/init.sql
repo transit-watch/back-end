@@ -12,7 +12,6 @@ CREATE TABLE BUS_STOP_INFO (
                                Y_LONGITUDE DOUBLE COMMENT '좌표Y 경도',
                                USE_YN CHAR(1) COMMENT '사용 여부 (1: 사용, 0: 미사용)',
                                VIRTUAL_BUS_STOP_YN CHAR(1) COMMENT '가상 정류장 여부 (1: 가상정류장, 0: 일반정류장)',
-                               RECORD_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '기록일시',
                                REGISTER_DATE TIMESTAMP COMMENT '등록일시',
                                EDIT_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시'
 ) COMMENT '정류장 정보 테이블 (T-DATA)';
@@ -43,6 +42,7 @@ CREATE TABLE BUS_STOP_CROWDING (
                                    SEND_PACKET_DAY CHAR(2) COMMENT '패킷전송일',
                                    SEND_PACKET_TIME CHAR(6) COMMENT '패킷전송시간',
                                    SEND_PACKET_MILISECOND CHAR(4) COMMENT '패킷전송밀리초',
+                                   RECORD_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '기록일시',
                                    REGISTER_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '등록일시',
                                    EDIT_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시'
 ) COMMENT '버스 승강장 혼잡 정보 테이블';
