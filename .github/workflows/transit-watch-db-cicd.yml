@@ -1,0 +1,92 @@
+name: Transit Watch DB CI/CD
+
+on:
+  #  push:
+  #    branches:
+  #      [ "develop" ]
+  workflow_dispatch:
+    paths:
+      - 'db/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        # 현재 리포지토리를 체크아웃합니다.
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        # Docker Buildx를 설정합니다.
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          # GitHub Secret에서 Docker Hub 사용자 이름을 가져옵니다.
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          # GitHub Secret에서 Docker Hub 액세스 토큰을 가져옵니다.
+
+      - name: Mysql Build and Push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./db/mysql
+          # Dockerfile이 있는 위치입니다.
+          file: ./db/mysql/Dockerfile
+          # Dockerfile의 경로입니다.
+          push: true
+          # 이미지를 레지스트리에 푸시합니다.
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/transit-watch-mysql:${{ github.sha }}
+          platforms: linux/amd64,linux/arm64
+
+      - name: Redis Build and Push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./db/redis
+          # Dockerfile이 있는 위치입니다.
+          file: ./db/redis/Dockerfile
+          # Dockerfile의 경로입니다.
+          push: true
+          # 이미지를 레지스트리에 푸시합니다.
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/transit-watch-redis:${{ github.sha }}
+          platforms: linux/amd64,linux/arm64
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: NCP login and docker image pull and run start
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.NCP_HOST_DB }}
+          username: ${{ secrets.NCP_USERNAME_DB }}
+          password: ${{ secrets.NCP_PASSWORD_DB }}
+          port: ${{ secrets.NCP_PORT_DB }}
+          script: |
+            cd /root/compose
+            sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+            sudo docker rm -f $(docker ps -aq)
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/transit-watch-mysql:${{ github.sha }}
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/transit-watch-redis:${{ github.sha }}
+            sudo INPUT_TAG=${{ github.sha }} MYSQL_ROOT_PASSWORD=${{ secrets.ROOT_PASSWORD_MYSQL }} docker-compose -f docker-compose.yml up -d
+            sudo docker image prune -f        
+
+  ## slack
+  action-slack:
+    needs:
+      - build-and-push
+      - deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack Alarm
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: GitHub-Actions CI/CD
+          fields: repo,message,commit,author,ref,job,took
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        if: always() # Pick up events even if the job fails or is canceled.

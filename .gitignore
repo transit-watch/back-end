@@ -42,3 +42,13 @@ out/
 
 ## 기타 ##
 src/main/resources/application.yml
+
+db/mysql/.env
+
+src/main/resources/application.yml
+
+docker-compose.yml
+
+src/main/resources/new.yml
+
+src/main/resources/new.properties
