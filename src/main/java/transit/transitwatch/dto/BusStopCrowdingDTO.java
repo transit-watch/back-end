@@ -1,57 +1,61 @@
 package transit.transitwatch.dto;
 
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import transit.transitwatch.entity.BusStopCrowding;
-import transit.transitwatch.util.DateTimestampAdapter;
-import transit.transitwatch.util.DoubleTimestampAdapter;
+import transit.transitwatch.util.DateTimestampDeserializer;
+import transit.transitwatch.util.DoubleTimestampDeserializer;
 
 import java.sql.Timestamp;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
 @ToString
 @Getter
 public class BusStopCrowdingDTO {
 
     private Long id;
 
-    @SerializedName("itisCd")
+    @JsonProperty("itisCd")
     private String itisCd;
 
-    @SerializedName("trsmUtcTime")
-    @JsonAdapter(DoubleTimestampAdapter.class)
+    @JsonProperty("trsmUtcTime")
+    @JsonDeserialize(using = DoubleTimestampDeserializer.class)
     private Timestamp sendUtcTime;
 
-    @SerializedName("detcLot")
+    @JsonProperty("detcLot")
     private double yLongitude;
 
-    @SerializedName("detcLat")
+    @JsonProperty("detcLat")
     private double xLatitude;
 
-    @SerializedName("linkId")
+    @JsonProperty("linkId")
     private String linkId;
 
-    @SerializedName("sttnId")
+    @JsonProperty("sttnId")
     private String arsId;
 
-    @SerializedName("trsmYear")
+    @JsonProperty("trsmYear")
     private String sendPacketYear;
 
-    @SerializedName("trsmMt")
+    @JsonProperty("trsmMt")
     private String sendPacketMonth;
 
-    @SerializedName("trsmDy")
+    @JsonProperty("trsmDy")
     private String sendPacketDay;
 
-    @SerializedName("trsmTm")
+    @JsonProperty("trsmTm")
     private String sendPacketTime;
 
-    @SerializedName("trsmMs")
+    @JsonProperty("trsmMs")
     private String sendPacketMilisecond;
 
-    @JsonAdapter(DateTimestampAdapter.class)
-    @SerializedName("regDt")
+    @JsonDeserialize(using = DateTimestampDeserializer.class)
+    @JsonProperty("regDt")
     private Timestamp recordDate;
 
     private Timestamp registerDate;

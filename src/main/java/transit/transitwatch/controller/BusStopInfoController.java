@@ -1,7 +1,7 @@
 package transit.transitwatch.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import transit.transitwatch.service.BusStopInfoService;
 
@@ -14,7 +14,7 @@ public class BusStopInfoController {
     /*
      * 버스 정류장 정보 csv파일 db에 저장하기
      * */
-    @GetMapping("/api/save/busStopInfo")
+    @PostMapping("/bus-stops/info")
     public void downloadAndSaveBusStopInfo() {
         try {
             busStopInfoService.saveBusStopInfoFile("bus_stop_info.csv");

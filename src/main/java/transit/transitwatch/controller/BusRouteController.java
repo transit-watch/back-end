@@ -1,7 +1,7 @@
 package transit.transitwatch.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import transit.transitwatch.service.BusRouteService;
 
@@ -14,7 +14,7 @@ public class BusRouteController {
     /*
      * 버스 노선 경로 파일 다운로드 + 엑셀을 csv로 변환 + 저장
      * */
-    @GetMapping("/api/download/busRoute")
+    @PostMapping("/bus-stops/route")
     public void downloadAndSaveBusRoute() {
         // csv파일 db에 저장하기
         try {

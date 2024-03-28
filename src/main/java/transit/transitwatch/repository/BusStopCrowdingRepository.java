@@ -6,5 +6,4 @@ import transit.transitwatch.entity.BusStopCrowding;
 
 @Repository
 public interface BusStopCrowdingRepository extends JpaRepository<BusStopCrowding, Long> {
-
 }
