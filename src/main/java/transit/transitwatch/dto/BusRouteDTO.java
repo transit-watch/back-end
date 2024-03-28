@@ -1,9 +1,13 @@
 package transit.transitwatch.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import transit.transitwatch.entity.BusRoute;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
 @ToString
 @Getter
 public class BusRouteDTO {

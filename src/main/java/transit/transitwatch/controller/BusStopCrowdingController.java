@@ -1,39 +1,26 @@
 package transit.transitwatch.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import transit.transitwatch.service.BusStopCrowdingService;
 
-@RestController
 @RequiredArgsConstructor
+@RestController
 public class BusStopCrowdingController {
 
     private final BusStopCrowdingService busStopCrowdingService;
 
     /*
-    * 버스 정류장 혼잡도 api 조회 후 저장하기
-    * */
-    @GetMapping("/api/save/busStopCrowding")
-    public void saveBusStopCrowding() {
+     * 버스 정류장 혼잡도 api 조회 후 저장하기
+     * */
+    @PostMapping("/bus-stops/crowding")
+    public void saveBusStopCrowding(@RequestParam("pageNo") int pageNo, @RequestParam("numOfRows") int numOfRows) {
         try {
-            busStopCrowdingService.saveBusStopCrowdingApi();
+            busStopCrowdingService.saveBusStopCrowdingApi(pageNo, numOfRows);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /*
-     * 버스 정류장 혼잡도 테이블에서 조회해오기
-     * */
-    @GetMapping("/api/busStopCrowding")
-    public void selectBusStopCrowding() {
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//
-//        List<BusStopCrowding> resultList = busStopCrowdingService.selectBusStopCrowding(id);
-//
-//        String result = gson.toJson(resultList);
-//
-//        return result;
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import transit.transitwatch.config.AbstractRestDocsTests;
 import transit.transitwatch.service.BusStopCrowdingService;
 import transit.transitwatch.util.ApiUtil;
-import transit.transitwatch.util.GsonUtil;
+import transit.transitwatch.util.ApiJsonParser;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,7 +21,7 @@ class BusStopCrowdingControllerTest extends AbstractRestDocsTests {
     private BusStopCrowdingService busStopCrowdingService;
 
     @MockBean
-    private GsonUtil gsonUtil;
+    private ApiJsonParser apiJsonParser;
 
     @MockBean
     private ApiUtil apiUtil;

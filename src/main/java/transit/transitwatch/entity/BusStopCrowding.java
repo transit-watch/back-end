@@ -1,10 +1,7 @@
 package transit.transitwatch.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -39,6 +36,10 @@ public class BusStopCrowding {
 
     @Column(name = "ARS_ID", length = 5)
     private String arsId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ARS_ID", insertable = false, updatable = false)
+    private BusStopInfo busStopInfo;
 
     @Column(name = "SEND_PACKET_YEAR", length = 4)
     private String sendPacketYear;
@@ -84,7 +85,4 @@ public class BusStopCrowding {
         this.editDate = editDate;
     }
 
-    //    @ManyToOne
-//    @JoinColumn(name = "ARS_ID")
-//    private BusStopInfo busStopInfo;
 }
