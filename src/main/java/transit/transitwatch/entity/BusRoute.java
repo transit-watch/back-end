@@ -49,6 +49,10 @@ public class BusRoute {
     @Column(name = "EDIT_DATE")
     private Timestamp editDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STATION_ID", insertable = false, updatable = false)
+    private BusStopInfo busStopInfo;
+
     public BusRoute(String routeId, String routeName, int routeOrder, String stationId, String arsId, double xLatitude, double yLongitude) {
         this.routeId = routeId;
         this.routeName = routeName;

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
+import java.net.URI;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -36,6 +37,11 @@ public class ApiUtil {
      * */
     public String getApi(String url) throws Exception {
         String forObject = restTemplate.getForObject(url, String.class);
+        return forObject;
+    }
+
+    public String getApiUri(URI uri) throws Exception {
+        String forObject = restTemplate.getForObject(uri, String.class);
 
         return forObject;
     }
