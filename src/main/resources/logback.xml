@@ -5,6 +5,11 @@
         </encoder>
     </appender>
 
+    <!-- Lettuce 로그 설정 -->
+    <logger name="io.lettuce.core" level="INFO"/>
+    <!-- Netty 로그 설정 -->
+    <logger name="io.netty" level="INFO"/>
+
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>

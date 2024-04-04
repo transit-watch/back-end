@@ -12,7 +12,9 @@ import java.sql.Timestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name = "BUS_ROUTE")
+@Table(name = "BUS_ROUTE", uniqueConstraints = {
+        @UniqueConstraint(name = "unique_route_station_ars", columnNames = {"ROUTE_ID", "STATION_ID", "ARS_ID"})
+})
 public class BusRoute {
 
     @Id

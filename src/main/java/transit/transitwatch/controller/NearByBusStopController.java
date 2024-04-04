@@ -1,37 +1,41 @@
 package transit.transitwatch.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import transit.transitwatch.dto.common.CommonApiDTO;
+import transit.transitwatch.dto.near.ItemNear;
 import transit.transitwatch.dto.response.NearByBusStopResponse;
-import transit.transitwatch.service.BusStopCrowdingService;
+import transit.transitwatch.dto.response.Response;
 import transit.transitwatch.service.NearByBusStopService;
-import transit.transitwatch.util.ItisCdEnum;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+/**
+ * 사용자의 위치 주변에 있는 버스 정류장 정보 제공 컨트롤러.
+ */
 @RequiredArgsConstructor
 @RestController
 public class NearByBusStopController {
 
     private final NearByBusStopService nearByBusStopService;
-    private final BusStopCrowdingService busStopCrowdingService;
 
-    /*
-     * 좌표기반 근처 버스 정류장 목록 조회
-     * */
-    @GetMapping("/bus-stops/near")
-    public ResponseEntity<Map<String, Object>> nearByBusStopList(@RequestParam("tmX") double tmX
+    /**
+     * 사용자의 현재 좌표와 지정된 반경 내에 있는 버스 정류장 목록을 조회한다.
+     * <p>이 메서드는 사용자의 위치 좌표와 검색 반경을 파라미터로 받아 해당 범위 내에 있는
+     * 버스 정류장 정보를 조회하여 반환한다.</p>
+     * @param tmX 사용자의 x 좌표 (위도)
+     * @param tmY 사용자의 y 좌표 (경도)
+     * @param radius 검색 반경(미터 단위)
+     * @return 근처 버스 정류장 목록이 담긴 Response 객체
+     * @throws RuntimeException API 호출 중 예외 발생 시
+     */
+    @GetMapping("/api/v1/bus-stops/near")
+    public Response<List<NearByBusStopResponse>> nearByBusStopList(@RequestParam("tmX") double tmX
             , @RequestParam("tmY") double tmY, @RequestParam("radius") int radius) {
 
-        Map<String, Object> response = new HashMap<>();
-        CommonApiDTO commonApiDTO = null;
+        CommonApiDTO<ItemNear> commonApiDTO = null;
 
         // api에서 근처 정류장 정보 가져오기
         try {
@@ -40,33 +44,8 @@ public class NearByBusStopController {
             throw new RuntimeException(e);
         }
 
-        // 가져온 데이터에 정류소의 혼잡도 정보 추가해서 response
-        List<NearByBusStopResponse> collect = commonApiDTO.getMsgBody().getItemList().stream()
-                .map(item -> {
-                    ItisCdEnum itisCdEnum = null;
-                    try {
-                        // 해당 정류장의 혼잡도 정보 가져오기
-                         itisCdEnum= busStopCrowdingService.selectBusStopCrowding(item.getArsId());
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    // dto에 set
-                    NearByBusStopResponse input = NearByBusStopResponse.builder()
-                            .stationId(item.getStationId())
-                            .stationName(item.getStationNm())
-                            .arsId(item.getArsId())
-                            .xLatitude(Double.parseDouble(item.getGpsX()))
-                            .yLongitude(Double.parseDouble(item.getGpsY()))
-                            .distance(Integer.parseInt(item.getDist()))
-                            .crowding(itisCdEnum.name())
-                            .build()
-                            ;
-                    return input;
-                })
-                .collect(Collectors.toList());
+        List<NearByBusStopResponse> collect = nearByBusStopService.getNearByBusStopResponses(commonApiDTO);
 
-        response.put("nearByBusStopList", collect);
-
-        return ResponseEntity.ok(response);
+        return Response.ok(collect);
     }
 }

@@ -1,4 +1,4 @@
-= Spring REST Docs Test
+= Transit Watch REST Docs
 :doctype: book
 :source-highlighter: highlightjs
 :toc: left
@@ -6,3 +6,9 @@
 :seclinks:
 
 include::test.adoc[]
+include::autocomplete.adoc[]
+include::bus-stop-info.adoc[]
+include::bus-route.adoc[]
+include::bus-stop-crowding.adoc[]
+include::detail-bus-stop.adoc[]
+include::near-by-bus-stop.adoc[]

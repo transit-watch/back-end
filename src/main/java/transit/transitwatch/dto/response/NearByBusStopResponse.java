@@ -12,6 +12,7 @@ import lombok.ToString;
 @ToString
 @Getter
 public class NearByBusStopResponse {
+
     private String stationId;
     private String stationName;
     private String arsId;

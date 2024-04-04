@@ -26,17 +26,18 @@ CREATE TABLE BUS_ROUTE (
                            X_LATITUDE DOUBLE COMMENT '좌표X 위도',
                            Y_LONGITUDE DOUBLE COMMENT '좌표Y 경도',
                            REGISTER_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '등록일시',
-                           EDIT_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시'
+                           EDIT_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
+                           UNIQUE(ROUTE_ID, STATION_ID, ARS_ID)
 ) COMMENT '버스 노선 정보 조회 테이블';
 
 CREATE TABLE BUS_STOP_CROWDING (
                                    ID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '자동 증가하는 기본 키 ID',
-                                   ITIS_CD CHAR(5) COMMENT 'ITIS코드',
+                                   ITIS_CD CHAR(5) COMMENT 'ITIS코드 (1545：승강장 혼잡 알림-보통 1546：승강장 혼잡알림-혼잡)',
                                    SEND_UTC_TIME TIMESTAMP COMMENT '전송UTC시간',
                                    Y_LONGITUDE DOUBLE COMMENT '좌표Y 경도 (DETC_LOT 검지 경도)',
                                    X_LATITUDE DOUBLE COMMENT '좌표X 위도 (DETC_LAT 검지 위도)',
                                    LINK_ID CHAR(30) COMMENT '링크 ID',
-                                   ARS_ID CHAR(5) COMMENT '정류장 ID',
+                                   ARS_ID CHAR(5) UNIQUE COMMENT '정류장 ID',
                                    SEND_PACKET_YEAR CHAR(4) COMMENT '패킷전송년도',
                                    SEND_PACKET_MONTH CHAR(2) COMMENT '패킷전송월',
                                    SEND_PACKET_DAY CHAR(2) COMMENT '패킷전송일',
@@ -78,12 +79,13 @@ CREATE TABLE BUS_STOP_HOURLY_DATA (
                                       EDIT_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시'
 ) COMMENT '시간대별 승하차 인원 정보 테이블';
 
-CREATE VIEW BUS_STOP_CROWDING_VIEW AS
-WITH LATEST_DATA AS (
-    SELECT *,
-           RANK() OVER(PARTITION BY ARS_ID ORDER BY RECORD_DATE DESC, SEND_PACKET_MILISECOND DESC) AS RANKS
-    FROM BUS_STOP_CROWDING
-) COMMENT '버스 승강장별 최근 혼잡정보 뷰';
-SELECT ID, ITIS_CD, LINK_ID, ARS_ID
-FROM LATEST_DATA
-WHERE RANKS = 1;
+-- -- COMMENT '버스 승강장별 최근 혼잡정보 뷰';
+-- CREATE VIEW BUS_STOP_CROWDING_VIEW AS
+-- WITH LATEST_DATA AS (
+--     SELECT *,
+--            RANK() OVER(PARTITION BY ARS_ID ORDER BY RECORD_DATE DESC, SEND_PACKET_MILISECOND DESC) AS RANKS
+--     FROM BUS_STOP_CROWDING
+-- )
+-- SELECT ID, ITIS_CD, LINK_ID, ARS_ID
+-- FROM LATEST_DATA
+-- WHERE RANKS = 1;

@@ -5,7 +5,6 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import transit.transitwatch.dto.BusRouteDTO;
 import transit.transitwatch.entity.BusRoute;
 import transit.transitwatch.repository.BusRouteRepository;
 import transit.transitwatch.util.ApiUtil;
@@ -42,13 +41,14 @@ public class BusRouteService {
         int currentMonth = currentDate.getMonth().getValue();
         int fileId = currentMonth + 23;
 
-        // 서울시 버스 노선별 정류소 정보 파일 다운로드 URL
-        String busRouteUrl = "https://datafile.seoul.go.kr/bigfile/iot/inf/nio_download.do?infId=OA-1095&useCache=false&infSeq=2" +
-                "&seqNo=" + fileId +
-                "&seq=" + fileId;
+        String busRouteUrl = getBusRouteUrl(fileId);
 
         // 파일 다운로드
-        apiUtil.fileDownload(busRouteUrl, "bus_route.xlsx");
+        boolean fileYN = apiUtil.fileDownload(busRouteUrl, "bus_route.xlsx");
+        if (!fileYN) {
+            busRouteUrl = getBusRouteUrl(fileId - 1);
+            apiUtil.fileDownload(busRouteUrl, "bus_route.xlsx");
+        }
 
         // 파일 변환하기 (엑셀->csv)
         apiUtil.convertXlsxToCSV(filePath, "bus_route");
@@ -70,13 +70,19 @@ public class BusRouteService {
                 double xLatitude = Double.parseDouble(record.get(BusRouteEnumHeader.X_LATITUDE));
                 double yLongitude = Double.parseDouble(record.get(BusRouteEnumHeader.Y_LONGITUDE));
 
-                BusRouteDTO busRouteDTO = new BusRouteDTO(routeId, routeName, routeOrder, stationId, arsId, xLatitude, yLongitude);
-                BusRoute busRoute = busRouteDTO.toEntity();
-                busRouteList.add(busRoute);
+                busRouteRepository.upsertBusRoute(routeId, routeName, routeOrder, stationId, arsId, xLatitude, yLongitude);
             }
-            busRouteRepository.saveAll(busRouteList);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String getBusRouteUrl(int fileId) {
+        // 서울시 버스 노선별 정류소 정보 파일 다운로드 URL
+        String busRouteUrl = "https://datafile.seoul.go.kr/bigfile/iot/inf/nio_download.do?infId=OA-1095&useCache=false&infSeq=2" +
+                "&seqNo=" + fileId +
+                "&seq=" + fileId;
+        return busRouteUrl;
     }
 }

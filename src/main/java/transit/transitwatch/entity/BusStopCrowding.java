@@ -34,7 +34,7 @@ public class BusStopCrowding {
     @Column(name = "LINK_ID", length = 30)
     private String linkId;
 
-    @Column(name = "ARS_ID", length = 5)
+    @Column(name = "ARS_ID", length = 5, unique = true)
     private String arsId;
 
     @ManyToOne(fetch = FetchType.LAZY)

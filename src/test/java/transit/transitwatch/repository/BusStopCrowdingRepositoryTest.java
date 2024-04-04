@@ -22,15 +22,13 @@ class BusStopCrowdingRepositoryTest {
 
     @Autowired
     BusStopCrowdingRepository busStopCrowdingRepository;
-    @Autowired
-    BusStopCrowdingViewRepository busStopCrowdingViewRepository;
 
     @Autowired
     private JPAQueryFactory query;
 
     @DisplayName("버스 정류장 혼잡도 조회하기")
     @Test
-    void 혼잡_조회_테스트(){
+    void 혼잡_조회_테스트() {
         QBusStopCrowding qBusStopCrowding = QBusStopCrowding.busStopCrowding;
         List<BusStopCrowding> result = query
                 .selectFrom(qBusStopCrowding)
@@ -42,23 +40,23 @@ class BusStopCrowdingRepositoryTest {
 
     @DisplayName("정류장 혼잡도 1건 조회")
     @Test
-    void 혼잡_조회(){
-        String arsId="19006";
+    void 혼잡_조회() {
+        String arsId = "12021";
 
-        Optional<BusStopCrowdingProjection> result = busStopCrowdingViewRepository.findByArsId(arsId);
-        System.out.println("result = " + result.get().getLinkId());
+        Optional<BusStopCrowdingProjection> result = busStopCrowdingRepository.findByArsId(arsId);
+        System.out.println("result = " + result.get().getArsId());
         assertThat(result.get().getArsId()).isIn(arsId);
     }
 
     @DisplayName("정류장 혼잡도 다건 조회")
     @Test
-    void 혼잡_조회2(){
+    void 혼잡_조회2() {
         List<String> arsIdList = new ArrayList<>();
         arsIdList.add("19006");
         arsIdList.add("12021");
         arsIdList.add("13044");
 
-        List<BusStopCrowdingProjection> latestByArsId = busStopCrowdingViewRepository.findByArsIdIn(arsIdList);
+        List<BusStopCrowdingProjection> latestByArsId = busStopCrowdingRepository.findByArsIdIn(arsIdList);
         for (BusStopCrowdingProjection result : latestByArsId) {
             System.out.println("result = " + result.getLinkId());
             assertThat(result.getArsId()).isIn(arsIdList);

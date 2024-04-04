@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Spring REST Docs Test</title>
+<title>Transit Watch REST Docs</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -437,48 +437,31 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 </head>
-<body class="book toc2 toc-left">
+<body class="book">
 <div id="header">
-<h1>Spring REST Docs Test</h1>
+<h1>Transit Watch REST Docs</h1>
 <div class="details">
 <span id="revnumber">version 0.0.1-SNAPSHOT</span>
 </div>
-<div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_restdocstestcontroller">RestDocsTestController</a>
-<ul class="sectlevel2">
-<li><a href="#_restdocstestcontroller_http_request">HTTP request</a></li>
-<li><a href="#_restdocstestcontroller_http_response">HTTP response</a></li>
-</ul>
-</li>
-</ul>
-</div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_restdocstestcontroller">RestDocsTestController</h2>
+<div id="preamble">
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_restdocstestcontroller_http_request">HTTP request</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /rest HTTP/1.1
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_restdocstestcontroller_http_response">HTTP response</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: text/plain;charset=UTF-8
-Content-Length: 6
-
-test!!</code></pre>
-</div>
-</div>
+<div class="paragraph">
+<p>Unresolved directive in index.adoc - include::test.adoc[]
+== AutocompleteController
+operation::autocomplete-controller-test/search-bus-stop-info[snippets="http-request,http-response"]
+operation::autocomplete-controller-test/test-search-bus-stop-info[snippets="http-request,http-response"]
+== BusStopInfoController
+operation::bus-stop-info-controller-test/bus-stop-file-test[snippets="http-request,http-response"]
+== BusRouteController
+operation::bus-route-controller-test/bus-route-down[snippets="http-request,http-response"]
+== BusStopCrowdingController
+operation::bus-stop-crowding-controller-test/bus-stop-crowding-test[snippets="http-request,http-response"]
+== DetailBusStopController
+operation::detail-bus-stop-controller-test/detail-bus-stop[snippets="http-request,http-response"]
+== NearByBusStopController
+operation::near-by-bus-stop-controller-test/near-by-bus-stop-list[snippets="http-request,http-response"]</p>
 </div>
 </div>
 </div>
@@ -486,7 +469,7 @@ test!!</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-03-03 22:23:58 +0900
+Last updated 2024-04-04 14:49:58 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

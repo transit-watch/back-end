@@ -1,0 +1,2 @@
+== DetailBusStopController
+operation::detail-bus-stop-controller-test/detail-bus-stop[snippets="http-request,http-response"]

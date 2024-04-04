@@ -6,7 +6,6 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import transit.transitwatch.dto.BusStopInfoDTO;
 import transit.transitwatch.entity.BusStopInfo;
 import transit.transitwatch.repository.BusStopInfoRepository;
 import transit.transitwatch.util.ApiUtil;
@@ -23,7 +22,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class BusStopInfoService{
+public class BusStopInfoService {
 
     private final BusStopInfoRepository busStopInfoRepository;
     private final ApiUtil apiUtil;
@@ -60,16 +59,17 @@ public class BusStopInfoService{
                 char virtualBusStopYn = apiUtil.removeBOM(record.get(BusStopInfoEnumHeader.VIRTUAL_BUS_STOP_YN)).charAt(0);
 
                 // 가상정류장 제외, 미사용 제외
-                if(useYn == '0') continue;
-                if(virtualBusStopYn == '1') continue;
+                if (useYn == '0') continue;
+                if (virtualBusStopYn == '1') continue;
 
-                BusStopInfoDTO busStopInfoDTO = new BusStopInfoDTO(stationId, stationName, arsId, linkId, xLatitude, yLongitude, useYn, virtualBusStopYn);
-                BusStopInfo busStopInfo = busStopInfoDTO.toEntity();
-                busStopInfoList.add(busStopInfo);
+                busStopInfoRepository.upsertBusStopInfo(stationId, stationName, arsId, linkId, xLatitude, yLongitude, useYn, virtualBusStopYn);
             }
-            busStopInfoRepository.saveAll(busStopInfoList);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public BusStopInfo selectBusStopArsId(String arsId) {
+        return busStopInfoRepository.findByArsId(arsId);
     }
 }

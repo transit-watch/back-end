@@ -1,19 +1,18 @@
 package transit.transitwatch.controller;
 
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.transaction.annotation.Transactional;
 import transit.transitwatch.config.AbstractRestDocsTests;
 import transit.transitwatch.service.BusStopCrowdingService;
-import transit.transitwatch.util.ApiUtil;
 import transit.transitwatch.util.ApiJsonParser;
+import transit.transitwatch.util.ApiUtil;
 
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Transactional
 @WebMvcTest(BusStopCrowdingController.class)
 class BusStopCrowdingControllerTest extends AbstractRestDocsTests {
 
@@ -27,13 +26,14 @@ class BusStopCrowdingControllerTest extends AbstractRestDocsTests {
     private ApiUtil apiUtil;
 
 
-    @Disabled
+    @DisplayName("버스 정류장 혼잡도 조회")
     @Test
-    void 버스정류장_혼잡도_조회() throws Exception {
+    void busStopCrowdingTest() throws Exception {
 
-        mockMvc.perform(get("/api/busStopCrowding"))
+        mockMvc.perform(post("/api/v1/bus-stops/crowding?pageNo=1&numOfRows=30"))
                 .andExpect(status().isOk());
-       // BusStopCrowdingService
+
+        verify(busStopCrowdingService).saveBusStopCrowdingApi(1, 30);
 
     }
 }
