@@ -9,6 +9,7 @@ import lombok.ToString;
 /*
 * 공통메시지 헤더 - 항상 결과가 null(?)
 * */
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @ToString

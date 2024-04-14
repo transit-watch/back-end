@@ -13,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Getter
-public class Item {
+public class ItemNear {
     @JsonProperty("stationId")
     private String stationId;
     @JsonProperty("stationNm")

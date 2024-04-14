@@ -5,18 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import transit.transitwatch.dto.near.Item;
 
 import java.util.List;
 /*
 * 메시지 바디 - 본문 내용
 * */
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @ToString
 @Getter
-public class MsgBody {
+public class MsgBody <T> {
     @JsonProperty("itemList")
-    private List<Item> itemList;
+    private List<T> itemList;
 }
 

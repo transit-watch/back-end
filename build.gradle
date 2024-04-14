@@ -30,15 +30,13 @@ ext {
 dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-//	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//	testImplementation 'org.springframework.batch:spring-batch-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
 	// docs
@@ -62,14 +60,14 @@ dependencies {
 	implementation 'org.apache.commons:commons-csv:1.10.0'
 	// bom 컨트롤
 	implementation 'commons-io:commons-io:2.15.1'
-	// 엑셀을 csv로
+	// 엑셀을 csv로 바꾸기 위한 poi 라이브러리
 	implementation 'org.apache.poi:poi:5.2.5'
 	implementation 'org.apache.poi:poi-ooxml:5.2.5'
 }
 
 tasks.named('test') {
-	outputs.dir snippetsDir
 	useJUnitPlatform()
+	outputs.dir snippetsDir
 }
 
 tasks.named('asciidoctor') {

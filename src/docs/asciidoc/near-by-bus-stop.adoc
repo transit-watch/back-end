@@ -1,0 +1,2 @@
+== NearByBusStopController
+operation::near-by-bus-stop-controller-test/near-by-bus-stop-list[snippets="http-request,http-response"]

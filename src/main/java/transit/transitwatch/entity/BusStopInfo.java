@@ -4,16 +4,19 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
-
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name = "BUS_STOP_INFO")
+@Table(name = "BUS_STOP_INFO", indexes = {
+        @Index(name = "idx_ars_id", columnList = "ARS_ID")
+})
 public class BusStopInfo {
 
     @Id

@@ -13,8 +13,8 @@ import java.util.List;
 import static transit.transitwatch.entity.QBusRoute.busRoute;
 import static transit.transitwatch.entity.QBusStopInfo.busStopInfo;
 
-@Repository
 @RequiredArgsConstructor
+@Repository
 public class DetailBusStopRepositoryImpl implements DetailBusStopRepositoryCustom {
     private final JPAQueryFactory query;
 

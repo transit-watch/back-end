@@ -7,7 +7,7 @@ import transit.transitwatch.config.AbstractRestDocsTests;
 import transit.transitwatch.service.BusStopInfoService;
 
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BusStopInfoController.class)
@@ -17,8 +17,8 @@ class BusStopInfoControllerTest extends AbstractRestDocsTests {
     private BusStopInfoService busStopInfoService;
 
     @Test
-    void 버스정류장_파일저장() throws Exception {
-        mockMvc.perform(get("/api/save/busStopInfo"))
+    void busStopFileTest() throws Exception {
+        mockMvc.perform(post("/api/v1/bus-stops/info"))
                 .andExpect(status().isOk());
 
         verify(busStopInfoService).saveBusStopInfoFile("bus_stop_info.csv");

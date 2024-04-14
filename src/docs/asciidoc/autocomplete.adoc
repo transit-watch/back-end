@@ -1,0 +1,3 @@
+== AutocompleteController
+operation::autocomplete-controller-test/search-bus-stop-info[snippets="http-request,http-response"]
+operation::autocomplete-controller-test/test-search-bus-stop-info[snippets="http-request,http-response"]
