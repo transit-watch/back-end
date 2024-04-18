@@ -3,6 +3,7 @@ package transit.transitwatch.config;
 import com.redis.lettucemod.RedisModulesClient;
 import com.redis.lettucemod.api.StatefulRedisModulesConnection;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
     private final RedisProperties redisProperties;
 
+    @Value("${spring.data.redis.host}")
+    private String getHost;
+    
     /**
      * Lettuce로 Redis 연결 팩토리를 설정한다.
      *
@@ -27,7 +31,7 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisConfiguration = new RedisStandaloneConfiguration();
-        redisConfiguration.setHostName(redisProperties.getHost());
+        redisConfiguration.setHostName(getHost);
         redisConfiguration.setPort(redisProperties.getPort());
         redisConfiguration.setPassword(redisProperties.getPassword());
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisConfiguration);
@@ -61,7 +65,7 @@ public class RedisConfig {
      */
     @Bean
     public StatefulRedisModulesConnection<String, String> redisModulesConnection() {
-        RedisModulesClient client = RedisModulesClient.create("redis://" + redisProperties.getHost() + ":" + redisProperties.getPort());
+        RedisModulesClient client = RedisModulesClient.create("redis://" + getHost + ":" + redisProperties.getPort());
 
         return client.connect();
     }
