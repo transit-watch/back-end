@@ -2,7 +2,9 @@ package transit.transitwatch.config;
 
 import com.redis.lettucemod.RedisModulesClient;
 import com.redis.lettucemod.api.StatefulRedisModulesConnection;
+import com.redis.lettucemod.api.sync.RedisModulesCommands;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+@Slf4j
 @RequiredArgsConstructor
 @EnableRedisRepositories
 @Configuration
@@ -22,7 +25,7 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
     private String getHost;
-    
+
     /**
      * Lettuce로 Redis 연결 팩토리를 설정한다.
      *
@@ -59,14 +62,17 @@ public class RedisConfig {
     }
 
     /**
-     * RediSearch 이용을 위한 Redis Modules를 지원하는 연결을 생성하여 반환한다.
+     * Redis Modules를 사용하여 Redis 명령을 실행하기 위한 RedisModulesCommands 인스턴스를 생성하고 반환한다.
      *
-     * @return Redis Modules 연결
+     * @return RedisModulesCommands 인스턴스.
      */
     @Bean
-    public StatefulRedisModulesConnection<String, String> redisModulesConnection() {
-        RedisModulesClient client = RedisModulesClient.create("redis://" + getHost + ":" + redisProperties.getPort());
-
-        return client.connect();
+    public RedisModulesCommands<String, String> redisModulesCommands() {
+        String uri = "redis://" + getHost + ":" + redisProperties.getPort();
+        log.info("Redisearch connect : {} ", uri);
+        RedisModulesClient client = RedisModulesClient.create(uri);
+        StatefulRedisModulesConnection<String, String> connection = client.connect();
+        RedisModulesCommands<String, String> commands = connection.sync();
+        return commands;
     }
 }

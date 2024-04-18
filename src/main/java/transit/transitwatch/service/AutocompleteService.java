@@ -1,7 +1,6 @@
 package transit.transitwatch.service;
 
 
-import com.redis.lettucemod.api.StatefulRedisModulesConnection;
 import com.redis.lettucemod.api.sync.RedisModulesCommands;
 import com.redis.lettucemod.search.CreateOptions;
 import com.redis.lettucemod.search.Field;
@@ -34,7 +33,7 @@ public class AutocompleteService {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final BusStopInfoRepository busStopInfoRepository;
-    private final StatefulRedisModulesConnection<String, String> redisModulesConnection;
+    private final RedisModulesCommands<String, String> commands;
     private final TrieService trieService;
 
     /**
@@ -60,7 +59,6 @@ public class AutocompleteService {
      * @throws ServiceException 인덱스 생성 실패 시 발생
      */
     public void createIndex() {
-        RedisModulesCommands<String, String> commands = redisModulesConnection.sync();
         try {
             commands.ftInfo("autoindex");
         } catch (RedisCommandExecutionException e) {
@@ -123,9 +121,7 @@ public class AutocompleteService {
      * @throws ServiceException 검색 실패 시 발생
      */
     public List<SearchKeywordDTO> searchAndSort(Set<String> autocomplete, String xLatitude, String yLongitude) {
-        RedisModulesCommands<String, String> commands = redisModulesConnection.sync();
         // FT.SEARCH autoindex "@stationId:{1010001|010101010}"
-
         StringBuilder query = new StringBuilder();
         try {
             autocomplete.forEach(a -> {
