@@ -6,58 +6,53 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 import transit.transitwatch.dto.BusStopCrowdingDTO;
 import transit.transitwatch.dto.common.CommonApiDTO;
+import transit.transitwatch.exception.CustomException;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static transit.transitwatch.util.ErrorCode.*;
+
+/**
+ * JSON 데이터를 파싱하여 DTO 객체로 변환하는 유틸리티 클래스.
+ */
 @Component
 public class ApiJsonParser {
 
     /**
-     * 버스 정류장 혼잡도 정보를 JSON 문자열에서 파싱하여 DTO 리스트로 변환한다.
+     * JSON 문자열을 파싱하여 버스 정류장 혼잡도 데이터 리스트로 변환한다.
      *
-     * <p>이 메서드는 JSON 형식의 문자열을 받아 {@link BusStopCrowdingDTO} 객체 배열로 변환하고,
-     * 해당 배열을 리스트로 변환하여 반환합니다. 변환 과정에서 발생할 수 있는
-     * {@link JsonProcessingException}을 처리한다.</p>
-     * @param jsonString 버스 정류장 혼잡도 정보를 포함한 JSON 문자열
-     * @return 버스 정류장 혼잡도 정보가 담긴 {@link BusStopCrowdingDTO} 객체 리스트
-     * @throws RuntimeException JSON 파싱 중 발생한 예외 발생 시.
+     * @param jsonString 버스 정류장 혼잡도 데이터를 포함하는 JSON 문자열
+     * @return 파싱된 버스 정류장 혼잡도 데이터의 리스트
+     * @throws CustomException JSON 파싱에 실패했을 경우 발생
      */
     public List<BusStopCrowdingDTO> busStopCrowdingParser(String jsonString) {
 
         ObjectMapper objectMapper = new ObjectMapper();
-
-        BusStopCrowdingDTO[] busStopCrowdingDataArray = null;
         try {
-            busStopCrowdingDataArray = objectMapper.readValue(jsonString, BusStopCrowdingDTO[].class);
+            return Arrays.asList(objectMapper.readValue(jsonString, BusStopCrowdingDTO[].class));
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new CustomException(PARSING_FAIL);
         }
-
-        return Arrays.asList(busStopCrowdingDataArray);
     }
 
     /**
-     * ws.bus.go.kr API의 응답을 JSON 문자열에서 파싱하여 특정 타입의 데이터를 포함하는
-     * {@link CommonApiDTO} 객체로 변환한다.
-     * <p>이 메서드는 JSON 문자열을 받아 제네릭 타입의 {@link CommonApiDTO} 객체로 변환한다.
-     * 변환 과정에서 발생할 수 있는 {@link JsonProcessingException}을 처리한다. 메서드는
-     * 다양한 타입의 API 응답을 처리하기 위해 {@link TypeReference}를 사용한다.</p>
-     * @param jsonString 파싱할 JSON 문자열
-     * @param typeReference 반환할 {@link CommonApiDTO}의 타입 정보
-     * @return 파싱된 데이터를 포함하는 {@link CommonApiDTO} 객체
-     * @throws RuntimeException JSON 파싱 중 발생한 예외 발생 시.
+     * JSON 문자열을 파싱하여 일반적인 API 응답 형태의 DTO로 변환한다.
+     * 이 메서드는 제네릭 타입을 사용하여 다양한 종류의 데이터를 처리할 수 있다.
+     *
+     * @param jsonString API 응답을 포함하는 JSON 문자열
+     * @param typeReference 변환될 DTO의 타입 정보
+     * @return 파싱된 데이터를 포함하는 CommonApiDTO 객체
+     * @throws CustomException JSON 파싱에 실패했을 경우 발생
      */
     public <T> CommonApiDTO<T> busGoKrParser(String jsonString, TypeReference<CommonApiDTO<T>> typeReference) {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        CommonApiDTO<T> commonApiDTO = null;
-        try {
-            commonApiDTO = objectMapper.readValue(jsonString, typeReference);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
 
-        return commonApiDTO;
+        try {
+            return objectMapper.readValue(jsonString, typeReference);
+        } catch (JsonProcessingException e) {
+            throw new CustomException(PARSING_FAIL);
+        }
     }
 }

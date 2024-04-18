@@ -1,6 +1,11 @@
 package transit.transitwatch.controller;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +21,8 @@ import java.util.List;
 /**
  * 버스 정류장 상세 정보 제공 컨트롤러.
  */
+@Validated
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class DetailBusStopController {
@@ -38,28 +45,20 @@ public class DetailBusStopController {
      * @throws RuntimeException 정류장 정보 조회 또는 혼잡도 조회 중 예외가 발생한 경우
      */
     @GetMapping("/api/v1/bus-stops/detail/{arsId}")
-    public Response<DetailBusStopResponse> detailBusStop(@PathVariable("arsId") String arsId) {
+    public Response<DetailBusStopResponse> detailBusStop(@PathVariable("arsId") @Size(min=5, max=5) @Positive @NotNull String arsId) {
 
-        // 해당 정류장의 노선정보(버스목록) 다 가져오기
         List<RouteInfo> routeInfoList = detailBusStopService.getDetailBusStop(arsId);
 
-        // 노선 정보로 각각 버스의 도착정보 가져오기
         List<ArrivalInfo> arrivalInfoList = detailBusStopService.getArrivalInfo(routeInfoList);
 
-        // 위의 결과 합치기
         List<CombineArrivalRoute> combineArrivalRouteList = detailBusStopService.getCombineRoute(routeInfoList, arrivalInfoList);
 
-        // 정류장 정보 가져오기
         BusStopInfo busStopInfo = busStopInfoService.selectBusStopArsId(arsId);
 
-        // 정류장의 혼잡도 가져오기
         ItisCdEnum itisCdEnum;
-        try {
-            itisCdEnum = busStopCrowdingService.selectBusStopCrowding(arsId);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        // 정류장 정보 조합하기
+
+        itisCdEnum = busStopCrowdingService.selectBusStopCrowding(arsId);
+
         Station station = Station.builder()
                 .arsId(arsId)
                 .xLatitude(busStopInfo.getXLatitude())
@@ -69,7 +68,6 @@ public class DetailBusStopController {
                 .crowding(itisCdEnum.name())
                 .build();
 
-        // response dto에 담기
         DetailBusStopResponse response = DetailBusStopResponse.builder()
                 .station(station)
                 .combineArrivalRouteList(combineArrivalRouteList)

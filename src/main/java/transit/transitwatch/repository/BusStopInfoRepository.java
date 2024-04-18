@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import transit.transitwatch.entity.BusStopInfo;
+import transit.transitwatch.repository.projections.SearchKeywordProjection;
+
+import java.util.List;
 
 @Repository
 public interface BusStopInfoRepository extends JpaRepository<BusStopInfo, Long> {
@@ -26,4 +29,26 @@ public interface BusStopInfoRepository extends JpaRepository<BusStopInfo, Long> 
             "virtual_bus_stop_yn = new_val.virtual_bus_stop_yn, " +
             "edit_date = CURRENT_TIMESTAMP", nativeQuery = true)
     void upsertBusStopInfo(String stationId, String stationName, String arsId, String linkId, double xLatitude, double yLongitude, char useYN, char virtualBusStopYN);
+
+    @Query(value = "SELECT " +
+            "bsi.station_id AS stationId, " +
+            "bsi.station_name AS stationName, " +
+            "bsi.ars_id AS arsId, " +
+            "bsi.x_latitude AS xLatitude, " +
+            "bsi.y_longitude AS yLongitude, " +
+            "next_bsi.station_name AS nextStationName " +
+            "FROM bus_stop_info bsi " +
+            "LEFT JOIN (SELECT " +
+            "br.station_id AS stationId," +
+            " MAX(next_br.station_id) AS nextStationId " +
+            "FROM bus_route br " +
+            "LEFT JOIN bus_route next_br ON br.route_order + 1 = next_br.route_order " +
+            "AND br.route_id = next_br.route_id " +
+            "GROUP BY br.station_id" +
+            ") next_direction " +
+            "ON bsi.station_id = next_direction.stationId " +
+            "LEFT JOIN bus_stop_info next_bsi ON next_direction.nextStationId = next_bsi.station_id",
+            nativeQuery = true)
+    List<SearchKeywordProjection> selectBusStopInfo();
+
 }

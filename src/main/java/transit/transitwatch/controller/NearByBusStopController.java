@@ -1,6 +1,12 @@
 package transit.transitwatch.controller;
 
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +21,8 @@ import java.util.List;
 /**
  * 사용자의 위치 주변에 있는 버스 정류장 정보 제공 컨트롤러.
  */
+@Validated
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class NearByBusStopController {
@@ -32,17 +40,14 @@ public class NearByBusStopController {
      * @throws RuntimeException API 호출 중 예외 발생 시
      */
     @GetMapping("/api/v1/bus-stops/near")
-    public Response<List<NearByBusStopResponse>> nearByBusStopList(@RequestParam("tmX") double tmX
-            , @RequestParam("tmY") double tmY, @RequestParam("radius") int radius) {
+    public Response<List<NearByBusStopResponse>> nearByBusStopList(@RequestParam("tmX") @NotNull @Digits(integer=3, fraction=13)  double tmX
+            , @RequestParam("tmY") @Digits(integer=3, fraction=13) @NotNull double tmY
+            , @RequestParam("radius") @NotNull @Positive @Max(1500) int radius) {
 
         CommonApiDTO<ItemNear> commonApiDTO = null;
 
         // api에서 근처 정류장 정보 가져오기
-        try {
-            commonApiDTO = nearByBusStopService.getNearByBusStopApi(tmX, tmY, radius);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        commonApiDTO = nearByBusStopService.getNearByBusStopApi(tmX, tmY, radius);
 
         List<NearByBusStopResponse> collect = nearByBusStopService.getNearByBusStopResponses(commonApiDTO);
 

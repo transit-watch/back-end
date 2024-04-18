@@ -17,21 +17,10 @@ public class BusStopInfoScheduler {
     @Scheduled(cron = "0 0 3 ? 1,4,7,10 2#2") // 초 분 시간 일 월 요일
     public void run() {
         try {
-            try {
-                try {
-//                    busStopInfoService.saveBusStopInfoFile("bus_stop_info.csv");
-                    log.info("버스 정류장 정보 갱신 Scheduler 실행");
-
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
+            busStopInfoService.saveBusStopInfoFile("bus_stop_info.csv");
+            log.info("버스 정류장 정보 갱신 Scheduler 실행");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("버스 정류장 정보 갱신 중 오류 발생", e);
         }
     }
 }

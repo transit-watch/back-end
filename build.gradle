@@ -21,6 +21,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 ext {
@@ -32,6 +33,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -63,6 +65,12 @@ dependencies {
 	// 엑셀을 csv로 바꾸기 위한 poi 라이브러리
 	implementation 'org.apache.poi:poi:5.2.5'
 	implementation 'org.apache.poi:poi-ooxml:5.2.5'
+
+	// 형태소 분석기
+	implementation 'com.github.shin285:KOMORAN:3.3.9'
+	// redisearch
+	implementation 'com.redis:spring-lettucemod:3.8.0'
+
 }
 
 tasks.named('test') {

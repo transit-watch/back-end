@@ -19,7 +19,7 @@ public class BusRouteScheduler {
 //            busRouteService.saveBusRouteFile("bus_route.csv");
             log.info("버스 노선 정보 갱신 Scheduler 실행");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("버스 노선 정보 갱신 Scheduler 실행 중 에러 발생", e);
         }
     }
 }

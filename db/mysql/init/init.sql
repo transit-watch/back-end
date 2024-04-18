@@ -27,8 +27,10 @@ CREATE TABLE BUS_ROUTE (
                            Y_LONGITUDE DOUBLE COMMENT '좌표Y 경도',
                            REGISTER_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '등록일시',
                            EDIT_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
-                           UNIQUE(ROUTE_ID, STATION_ID, ARS_ID)
+                           UNIQUE(ROUTE_ID, STATION_ID, ARS_ID),
+                           INDEX idx_route_order (ROUTE_ORDER)
 ) COMMENT '버스 노선 정보 조회 테이블';
+
 
 CREATE TABLE BUS_STOP_CROWDING (
                                    ID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '자동 증가하는 기본 키 ID',
