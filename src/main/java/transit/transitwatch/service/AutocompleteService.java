@@ -24,6 +24,9 @@ import java.util.*;
 import static transit.transitwatch.util.ErrorCode.AUTOCOMPLETE_BASEDATA_FAIL;
 import static transit.transitwatch.util.ErrorCode.AUTOCOMPLETE_FAIL;
 
+/**
+ * Redis 및 MySQL을 사용하여 자동완성 데이터를 색인, 로드 및 검색하는 기능을 관리하는 서비스 클래스.
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -34,6 +37,13 @@ public class AutocompleteService {
     private final StatefulRedisModulesConnection<String, String> redisModulesConnection;
     private final TrieService trieService;
 
+    /**
+     * 주어진 키워드에 대한 자동완성 결과를 반환한다.
+     *
+     * @param keyword 사용자가 입력한 검색 키워드
+     * @return 자동완성된 버스 정류장 이름 목록
+     * @throws ServiceException 자동완성 검색 실패 시 발생
+     */
     public Set<String> autocomplete(String keyword) {
         try {
             TrieNode trie = trieService.getTrie();
@@ -44,6 +54,11 @@ public class AutocompleteService {
         }
     }
 
+    /**
+     * Redis에서 사용할 자동완성 인덱스를 생성한다.
+     *
+     * @throws ServiceException 인덱스 생성 실패 시 발생
+     */
     public void createIndex() {
         RedisModulesCommands<String, String> commands = redisModulesConnection.sync();
         try {
@@ -71,6 +86,11 @@ public class AutocompleteService {
         }
     }
 
+    /**
+     * MySQL에서 버스 정류장 정보를 가져와 Redis에 저장한다.
+     *
+     * @throws ServiceException 데이터 로딩 실패 시 발생
+     */
     public void loadBusStopInfoMysqlToRedis() {
         HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
         List<SearchKeywordProjection> all = busStopInfoRepository.selectBusStopInfo();
@@ -92,7 +112,16 @@ public class AutocompleteService {
             throw new ServiceException(AUTOCOMPLETE_BASEDATA_FAIL);
         }
     }
-
+    
+    /**
+     * 주어진 자동완성 목록과 좌표를 기반으로 검색 결과를 정렬한다.
+     *
+     * @param autocomplete 자동완성된 키워드 집합
+     * @param xLatitude 사용자의 위도
+     * @param yLongitude 사용자의 경도
+     * @return 정렬된 검색 키워드 DTO 목록
+     * @throws ServiceException 검색 실패 시 발생
+     */
     public List<SearchKeywordDTO> searchAndSort(Set<String> autocomplete, String xLatitude, String yLongitude) {
         RedisModulesCommands<String, String> commands = redisModulesConnection.sync();
         // FT.SEARCH autoindex "@stationId:{1010001|010101010}"
@@ -122,7 +151,16 @@ public class AutocompleteService {
             throw new ServiceException(AUTOCOMPLETE_FAIL);
         }
     }
-
+    
+    /**
+     * 결과 목록을 사용자 위치를 기준으로 정렬한다.
+     *
+     * @param results 검색 결과
+     * @param xLatitude 사용자의 위도
+     * @param yLongitude 사용자의 경도
+     * @return 거리에 따라 정렬된 버스 정류장 목록
+     * @throws ServiceException 정렬 실패 시 발생
+     */
     private List<SearchKeywordDTO> sortLocation(SearchResults<String, String> results, String xLatitude, String yLongitude) {
         List<SearchKeywordDTO> busStops = new ArrayList<>();
         try {
@@ -137,7 +175,6 @@ public class AutocompleteService {
                 busStops.add(new SearchKeywordDTO(stationId, stationName, arsId, latitude, longitude, nextStationName));
             });
 
-        // 거리 기준 정렬
         busStops.sort(Comparator.comparingDouble(a -> a.distance(xLatitude, yLongitude)));
         log.debug("현위치에 가까운 버스 정류장 정렬: {}", busStops);
         } catch (Exception e) {
