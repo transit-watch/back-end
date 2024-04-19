@@ -52,3 +52,4 @@ docker-compose.yml
 src/main/resources/new.yml
 
 src/main/resources/new.properties
+/src/main/resources/prod/

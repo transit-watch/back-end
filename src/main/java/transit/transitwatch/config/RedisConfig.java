@@ -1,30 +1,27 @@
 package transit.transitwatch.config;
 
-import com.redis.lettucemod.RedisModulesClient;
-import com.redis.lettucemod.api.StatefulRedisModulesConnection;
-import com.redis.lettucemod.api.sync.RedisModulesCommands;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Slf4j
-@RequiredArgsConstructor
-@EnableRedisRepositories
 @Configuration
 public class RedisConfig {
-    private final RedisProperties redisProperties;
 
     @Value("${spring.data.redis.host}")
     private String getHost;
+
+    @Value("${spring.data.redis.password}")
+    private String getPassword;
+
+    @Value("${spring.data.redis.port}")
+    private int getPort;
 
     /**
      * Lettuce로 Redis 연결 팩토리를 설정한다.
@@ -35,11 +32,9 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisConfiguration = new RedisStandaloneConfiguration();
         redisConfiguration.setHostName(getHost);
-        redisConfiguration.setPort(redisProperties.getPort());
-        redisConfiguration.setPassword(redisProperties.getPassword());
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisConfiguration);
-
-        return lettuceConnectionFactory;
+        redisConfiguration.setPort(getPort);
+        redisConfiguration.setPassword(getPassword);
+        return new LettuceConnectionFactory(redisConfiguration);
     }
 
     /**
@@ -49,9 +44,9 @@ public class RedisConfig {
      * @return 설정 된 RedisTemplate
      */
     @Bean
-    public RedisTemplate<String, String> redisTemplate() {
+    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
 
@@ -66,13 +61,15 @@ public class RedisConfig {
      *
      * @return RedisModulesCommands 인스턴스.
      */
-    @Bean
-    public RedisModulesCommands<String, String> redisModulesCommands() {
-        String uri = "redis://" + getHost + ":" + redisProperties.getPort();
-        log.info("Redisearch connect : {} ", uri);
-        RedisModulesClient client = RedisModulesClient.create(uri);
-        StatefulRedisModulesConnection<String, String> connection = client.connect();
-        RedisModulesCommands<String, String> commands = connection.sync();
-        return commands;
-    }
+//    @Bean
+//    public RedisModulesCommands<String, String> redisModulesCommands() {
+//
+//        String uri = "redis://" + getHost + ":" + redisProperties.getPort();
+//        log.info("--------------redis 모듈커맨드 연결 시작------------- : url = {}", uri);
+//        RedisModulesClient client = RedisModulesClient.create(uri);
+//        StatefulRedisModulesConnection<String, String> connection = client.connect();
+//        RedisModulesCommands<String, String> commands = connection.sync();
+//        log.info("--------------redis 모듈커맨드 연결 끝-------------");
+//        return commands;
+//    }
 }

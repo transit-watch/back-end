@@ -69,7 +69,7 @@ dependencies {
 	// 형태소 분석기
 	implementation 'com.github.shin285:KOMORAN:3.3.9'
 	// redisearch
-	implementation 'com.redis:spring-lettucemod:3.8.0'
+//	implementation 'com.redis:spring-lettucemod:3.8.0'
 
 }
 

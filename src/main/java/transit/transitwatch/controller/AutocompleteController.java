@@ -36,7 +36,8 @@ public class AutocompleteController {
             @RequestParam("xLatitude") @Digits(integer=3, fraction=13) String xLatitude,
             @RequestParam("yLongitude") @Digits(integer=3, fraction=13) String yLongitude) {
         Set<String> autocomplete = autocompleteService.autocomplete(keyword);
-        List<SearchKeywordDTO> result = autocompleteService.searchAndSort(autocomplete, xLatitude, yLongitude);
+//        List<SearchKeywordDTO> result = autocompleteService.searchAndSort(autocomplete, xLatitude, yLongitude);
+        List<SearchKeywordDTO> result = autocompleteService.searchAndSortHash(autocomplete, xLatitude, yLongitude);
         return Response.ok(result);
     }
 
@@ -47,7 +48,7 @@ public class AutocompleteController {
      */
     @PostMapping("/api/v1/bus-stops/autocomplete")
     public Response<String> saveBusStopInfoRedis() {
-        autocompleteService.createIndex();
+//        autocompleteService.createIndex();
         autocompleteService.loadBusStopInfoMysqlToRedis();
         return Response.ok("Redis 자동완성 정류장 명 키 값 세팅 성공");
     }
