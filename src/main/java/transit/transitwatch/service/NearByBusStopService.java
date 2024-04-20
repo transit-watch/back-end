@@ -4,13 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import transit.transitwatch.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import transit.transitwatch.dto.common.CommonApiDTO;
 import transit.transitwatch.dto.near.ItemNear;
 import transit.transitwatch.dto.response.NearByBusStopResponse;
 import transit.transitwatch.entity.BusStopInfo;
+import transit.transitwatch.exception.ServiceException;
 import transit.transitwatch.repository.BusStopInfoRepository;
 import transit.transitwatch.util.ApiJsonParser;
 import transit.transitwatch.util.ApiUtil;
@@ -19,6 +19,7 @@ import transit.transitwatch.util.ItisCdEnum;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static transit.transitwatch.util.ErrorCode.GET_URL_FAIL;
@@ -80,9 +81,9 @@ public class NearByBusStopService {
      * @return 버스 정류장 목록 응답 객체의 리스트
      */
     public List<NearByBusStopResponse> getNearByBusStopResponses(CommonApiDTO<ItemNear> commonApiDTO) {
-        // 가져온 데이터에 정류소의 혼잡도 정보 추가해서 response
         return commonApiDTO.getMsgBody().getItemList().stream()
-                .map(item -> createResponse(item))
+                .map(this::createResponse)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
@@ -94,10 +95,13 @@ public class NearByBusStopService {
      */
     private NearByBusStopResponse createResponse(ItemNear item) {
         try {
-            // 해당 정류장의 혼잡도 정보 가져오기
+            if(item.getArsId().equals("0")) return null;
+
             ItisCdEnum itisCdEnum = busStopCrowdingService.selectBusStopCrowding(item.getArsId());
-            // 정류장 명 가져오기
             BusStopInfo busStopInfo = busStopInfoRepository.findByArsId(item.getArsId());
+
+            if(busStopInfo == null) return null;
+
             return NearByBusStopResponse.builder()
                     .stationId(item.getStationId())
                     .stationName(busStopInfo.getStationName())
