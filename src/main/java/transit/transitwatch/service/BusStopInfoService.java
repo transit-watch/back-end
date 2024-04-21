@@ -79,15 +79,15 @@ public class BusStopInfoService {
                 String stationName = apiUtil.removeBOM(record.get(BusStopInfoEnumHeader.STATION_NAME));
                 String arsId = apiUtil.removeBOM(record.get(BusStopInfoEnumHeader.ARS_ID));
                 String linkId = apiUtil.removeBOM(record.get(BusStopInfoEnumHeader.LINK_ID));
-                Double xLatitude = Double.parseDouble(apiUtil.removeBOM(record.get(BusStopInfoEnumHeader.X_LATITUDE)));
-                Double yLongitude = Double.parseDouble(apiUtil.removeBOM(record.get(BusStopInfoEnumHeader.Y_LONGITUDE)));
+                Double yLatitude = Double.parseDouble(apiUtil.removeBOM(record.get(BusStopInfoEnumHeader.Y_LATITUDE)));
+                Double xLongitude = Double.parseDouble(apiUtil.removeBOM(record.get(BusStopInfoEnumHeader.X_LONGITUDE)));
                 char useYn = apiUtil.removeBOM(record.get(BusStopInfoEnumHeader.USE_YN)).charAt(0);
                 char busStopAreaType = apiUtil.removeBOM(record.get(BusStopInfoEnumHeader.BUS_STOP_AREA_TYPE)).charAt(0);
                 char virtualBusStopYn = apiUtil.removeBOM(record.get(BusStopInfoEnumHeader.VIRTUAL_BUS_STOP_YN)).charAt(0);
 
                 if (skipRecord(useYn, busStopAreaType, virtualBusStopYn)) continue;
 
-                busStopInfoRepository.upsertBusStopInfo(stationId, stationName, arsId, linkId, xLatitude, yLongitude, useYn, virtualBusStopYn);
+                busStopInfoRepository.upsertBusStopInfo(stationId, stationName, arsId, linkId, yLatitude, xLongitude, useYn, virtualBusStopYn);
             } catch (Exception e) {
                 log.error("버스 정류소 정보 레코드 파싱 실패: {}", record, e);
             }

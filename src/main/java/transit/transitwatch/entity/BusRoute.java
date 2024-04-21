@@ -37,11 +37,11 @@ public class BusRoute {
     @Column(name = "ARS_ID", length = 5)
     private String arsId;
 
-    @Column(name = "X_LATITUDE")
-    private double xLatitude;
+    @Column(name = "Y_LATITUDE")
+    private double yLatitude;
 
-    @Column(name = "Y_LONGITUDE")
-    private double yLongitude;
+    @Column(name = "X_LONGITUDE")
+    private double xLongitude;
 
     @CreationTimestamp
     @Column(name = "REGISTER_DATE", nullable = false, updatable = false)
@@ -55,13 +55,13 @@ public class BusRoute {
     @JoinColumn(name = "STATION_ID", insertable = false, updatable = false)
     private BusStopInfo busStopInfo;
 
-    public BusRoute(String routeId, String routeName, int routeOrder, String stationId, String arsId, double xLatitude, double yLongitude) {
+    public BusRoute(String routeId, String routeName, int routeOrder, String stationId, String arsId, double yLatitude, double xLongitude) {
         this.routeId = routeId;
         this.routeName = routeName;
         this.routeOrder = routeOrder;
         this.stationId = stationId;
         this.arsId = arsId;
-        this.xLatitude = xLatitude;
-        this.yLongitude = yLongitude;
+        this.yLatitude = yLatitude;
+        this.xLongitude = xLongitude;
     }
 }

@@ -11,23 +11,23 @@ public class SearchKeywordDTO {
     private String stationId;
     private String stationName;
     private String arsId;
-    private String xLatitude;
-    private String yLongitude;
-    @JsonProperty(value = "direction")
+    private String yLatitude;
+    private String xLongitude;
+    @JsonProperty("direction")
     private String nextStationName;
 
     @Builder
-    public SearchKeywordDTO(String stationId, String stationName, String arsId, String xLatitude, String yLongitude, String nextStationName) {
+    public SearchKeywordDTO(String stationId, String stationName, String arsId, String yLatitude, String xLongitude, String nextStationName) {
         this.stationId = stationId;
         this.stationName = stationName;
         this.arsId = arsId;
-        this.xLatitude = xLatitude;
-        this.yLongitude = yLongitude;
+        this.yLatitude = yLatitude;
+        this.xLongitude = xLongitude;
         this.nextStationName = nextStationName;
     }
-    public double distance(String xLatitude, String yLongitude) {
+    public double distance(String yLatitude, String xLongitude) {
         // 간단한 유클리디언 거리 계산 예제
-        return Math.sqrt(Math.pow(Double.parseDouble(this.xLatitude) - Double.parseDouble(xLatitude), 2)
-                + Math.pow(Double.parseDouble(this.yLongitude) - Double.parseDouble(yLongitude), 2));
+        return Math.sqrt(Math.pow(Double.parseDouble(this.yLatitude) - Double.parseDouble(yLatitude), 2)
+                + Math.pow(Double.parseDouble(this.xLongitude) - Double.parseDouble(xLongitude), 2));
     }
 }

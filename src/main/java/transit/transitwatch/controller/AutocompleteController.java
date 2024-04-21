@@ -33,11 +33,11 @@ public class AutocompleteController {
     public Response<List<SearchKeywordDTO>> searchBusStopInfo(
             @RequestParam("keyword") @Pattern( message = "한글, 영어, 숫자 1 ~ 30자 만 가능합니다.",
                     regexp = "^[ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9]{1,30}+$") String keyword,
-            @RequestParam("xLatitude") @Digits(integer=3, fraction=13) String xLatitude,
-            @RequestParam("yLongitude") @Digits(integer=3, fraction=13) String yLongitude) {
+            @RequestParam("yLatitude") @Digits(integer=3, fraction=13) String yLatitude,
+            @RequestParam("xLongitude") @Digits(integer=3, fraction=13) String xLongitude) {
         Set<String> autocomplete = autocompleteService.autocomplete(keyword);
-//        List<SearchKeywordDTO> result = autocompleteService.searchAndSort(autocomplete, xLatitude, yLongitude);
-        List<SearchKeywordDTO> result = autocompleteService.searchAndSortHash(autocomplete, xLatitude, yLongitude);
+//        List<SearchKeywordDTO> result = autocompleteService.searchAndSort(autocomplete, yLatitude, xLongitude);
+        List<SearchKeywordDTO> result = autocompleteService.searchAndSortHash(autocomplete, yLatitude, xLongitude);
         return Response.ok(result);
     }
 

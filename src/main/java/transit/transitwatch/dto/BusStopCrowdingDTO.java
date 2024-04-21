@@ -28,10 +28,10 @@ public class BusStopCrowdingDTO {
     private Timestamp sendUtcTime;
 
     @JsonProperty("detcLot")
-    private double yLongitude;
+    private double xLongitude;
 
     @JsonProperty("detcLat")
-    private double xLatitude;
+    private double yLatitude;
 
     @JsonProperty("linkId")
     private String linkId;
@@ -62,12 +62,12 @@ public class BusStopCrowdingDTO {
     private Timestamp editDate;
     private String url;
 
-    public BusStopCrowdingDTO(Long id, String itisCd, Timestamp sendUtcTime, double yLongitude, double xLatitude, String linkId, String arsId, String sendPacketYear, String sendPacketMonth, String sendPacketDay, String sendPacketTime, String sendPacketMilisecond, Timestamp recordDate, Timestamp registerDate, Timestamp editDate, String url) {
+    public BusStopCrowdingDTO(Long id, String itisCd, Timestamp sendUtcTime, double xLongitude, double yLatitude, String linkId, String arsId, String sendPacketYear, String sendPacketMonth, String sendPacketDay, String sendPacketTime, String sendPacketMilisecond, Timestamp recordDate, Timestamp registerDate, Timestamp editDate, String url) {
         this.id = id;
         this.itisCd = itisCd;
         this.sendUtcTime = sendUtcTime;
-        this.yLongitude = yLongitude;
-        this.xLatitude = xLatitude;
+        this.xLongitude = xLongitude;
+        this.yLatitude = yLatitude;
         this.linkId = linkId;
         this.arsId = arsId;
         this.sendPacketYear = sendPacketYear;
@@ -89,8 +89,8 @@ public class BusStopCrowdingDTO {
                 this.id,
                 this.itisCd,
                 this.sendUtcTime,
-                this.yLongitude,
-                this.xLatitude,
+                this.xLongitude,
+                this.yLatitude,
                 this.linkId,
                 this.arsId,
                 this.sendPacketYear,

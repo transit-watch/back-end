@@ -61,8 +61,8 @@ public class DetailBusStopController {
 
         Station station = Station.builder()
                 .arsId(arsId)
-                .xLatitude(busStopInfo.getXLatitude())
-                .yLongitude(busStopInfo.getYLongitude())
+                .yLatitude(busStopInfo.getYLatitude())
+                .xLongitude(busStopInfo.getXLongitude())
                 .stationName(busStopInfo.getStationName())
                 .nextStationName(routeInfoList.get(0).getDirection())
                 .crowding(itisCdEnum.name())

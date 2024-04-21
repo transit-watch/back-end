@@ -85,10 +85,10 @@ public class BusRouteService {
                 int routeOrder = Integer.parseInt(record.get(BusRouteEnumHeader.ROUTE_ORDER));
                 String stationId = record.get(BusRouteEnumHeader.STATION_ID);
                 String arsId = record.get(BusRouteEnumHeader.ARS_ID);
-                double xLatitude = Double.parseDouble(record.get(BusRouteEnumHeader.X_LATITUDE));
-                double yLongitude = Double.parseDouble(record.get(BusRouteEnumHeader.Y_LONGITUDE));
+                double yLatitude = Double.parseDouble(record.get(BusRouteEnumHeader.Y_LATITUDE));
+                double xLongitude = Double.parseDouble(record.get(BusRouteEnumHeader.X_LONGITUDE));
 
-                busRouteRepository.upsertBusRoute(routeId, routeName, routeOrder, stationId, arsId, xLatitude, yLongitude);
+                busRouteRepository.upsertBusRoute(routeId, routeName, routeOrder, stationId, arsId, yLatitude, xLongitude);
             } catch (Exception e) {
                 log.error("버스 노선 정보 레코드 파싱 실패: {}", record, e);
             }

@@ -25,11 +25,11 @@ public class BusStopCrowding {
     @Column(name = "SEND_UTC_TIME")
     private Timestamp sendUtcTime;
 
-    @Column(name = "Y_LONGITUDE")
-    private double yLongitude;
+    @Column(name = "X_LONGITUDE")
+    private double xLongitude;
 
-    @Column(name = "X_LATITUDE")
-    private double xLatitude;
+    @Column(name = "Y_LATITUDE")
+    private double yLatitude;
 
     @Column(name = "LINK_ID", length = 30)
     private String linkId;
@@ -67,12 +67,12 @@ public class BusStopCrowding {
     @Column(name = "EDIT_DATE")
     private Timestamp editDate;
 
-    public BusStopCrowding(Long id, String itisCd, Timestamp sendUtcTime, double yLongitude, double xLatitude, String linkId, String arsId, String sendPacketYear, String sendPacketMonth, String sendPacketDay, String sendPacketTime, String sendPacketMilisecond, Timestamp recordDate, Timestamp registerDate, Timestamp editDate) {
+    public BusStopCrowding(Long id, String itisCd, Timestamp sendUtcTime, double xLongitude, double yLatitude, String linkId, String arsId, String sendPacketYear, String sendPacketMonth, String sendPacketDay, String sendPacketTime, String sendPacketMilisecond, Timestamp recordDate, Timestamp registerDate, Timestamp editDate) {
         this.id = id;
         this.itisCd = itisCd;
         this.sendUtcTime = sendUtcTime;
-        this.yLongitude = yLongitude;
-        this.xLatitude = xLatitude;
+        this.xLongitude = xLongitude;
+        this.yLatitude = yLatitude;
         this.linkId = linkId;
         this.arsId = arsId;
         this.sendPacketYear = sendPacketYear;

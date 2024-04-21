@@ -65,8 +65,8 @@ public class AutocompleteService {
                 data.put("stationId", busStop.getStationId());
                 data.put("stationName", busStop.getStationName());
                 data.put("arsId", busStop.getArsId());
-                data.put("xLatitude", String.valueOf(busStop.getXLatitude()));
-                data.put("yLongitude", String.valueOf(busStop.getYLongitude()));
+                data.put("yLatitude", String.valueOf(busStop.getYLatitude()));
+                data.put("xLongitude", String.valueOf(busStop.getXLongitude()));
                 data.put("nextStationName", busStop.getNextStationName());
 
                 hashOperations.putAll("autocomplete:" + busStop.getStationId(), data);
@@ -79,15 +79,15 @@ public class AutocompleteService {
 
     /**
      * Redis에서 자동완성 키에 해당하는 해시 값을 조회하고 정렬한다.
-     * 사용자의 현재 위치(xLatitude, yLongitude)와 가까운 순서대로 버스 정류장을 정렬하여 반환한다.
+     * 사용자의 현재 위치(yLatitude, xLongitude)와 가까운 순서대로 버스 정류장을 정렬하여 반환한다.
      *
      * @param autocomplete 자동완성 키 Set
-     * @param xLatitude 사용자의 위도
-     * @param yLongitude 사용자의 경도
+     * @param yLatitude 사용자의 위도
+     * @param xLongitude 사용자의 경도
      * @return 정렬된 {@link SearchKeywordDTO} 객체 리스트
      * @throws ServiceException Redis 연결 오류나 데이터 처리 실패 시 발생
      */
-    public List<SearchKeywordDTO> searchAndSortHash(Set<String> autocomplete, String xLatitude, String yLongitude) {
+    public List<SearchKeywordDTO> searchAndSortHash(Set<String> autocomplete, String yLatitude, String xLongitude) {
         List<SearchKeywordDTO> busStops = new ArrayList<>();
         try {
             List<Object> results = redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
@@ -104,13 +104,13 @@ public class AutocompleteService {
                             hashValues.get("stationId"),
                             hashValues.get("stationName"),
                             hashValues.get("arsId"),
-                            hashValues.get("xLatitude"),
-                            hashValues.get("yLongitude"),
+                            hashValues.get("yLatitude"),
+                            hashValues.get("xLongitude"),
                             hashValues.get("nextStationName")
                     ));
                 }
             }
-            busStops.sort(Comparator.comparingDouble(a -> a.distance(xLatitude, yLongitude)));
+            busStops.sort(Comparator.comparingDouble(a -> a.distance(yLatitude, xLongitude)));
             log.debug("현위치에 가까운 버스 정류장 정렬: {}", busStops);
         } catch (Exception e) {
             log.error("정류장 목록 정렬 중 오류가 발생했습니다.", e);
@@ -139,8 +139,8 @@ public class AutocompleteService {
 //                            Field.tag("stationId").sortable().build(),
 //                            Field.text("stationName").sortable().build(),
 //                            Field.tag("arsId").sortable().build(),
-//                            Field.text("xLatitude").sortable().build(),
-//                            Field.text("yLongitude").sortable().build()
+//                            Field.text("yLatitude").sortable().build(),
+//                            Field.text("xLongitude").sortable().build()
 //                    );
 //                } catch (RedisCommandExecutionException ce) {
 //                    log.error("Redis 인덱스 생성 중 오류가 발생했습니다.", ce);
@@ -154,12 +154,12 @@ public class AutocompleteService {
      * 주어진 자동완성 목록과 좌표를 기반으로 검색 결과를 정렬한다.
      *
      * @param autocomplete 자동완성된 키워드 집합
-     * @param xLatitude 사용자의 위도
-     * @param yLongitude 사용자의 경도
+     * @param yLatitude 사용자의 위도
+     * @param xLongitude 사용자의 경도
      * @return 정렬된 검색 키워드 DTO 목록
      * @throws ServiceException 검색 실패 시 발생
      */
-//    public List<SearchKeywordDTO> searchAndSort(Set<String> autocomplete, String xLatitude, String yLongitude) {
+//    public List<SearchKeywordDTO> searchAndSort(Set<String> autocomplete, String yLatitude, String xLongitude) {
 //        // FT.SEARCH autoindex "@stationId:{1010001|010101010}"
 //        StringBuilder query = new StringBuilder();
 //        try {
@@ -171,13 +171,13 @@ public class AutocompleteService {
 //
 //            SearchResults<String, String> results = commands.ftSearch("autoindex", "@stationId:{" + query + "}",
 //                    SearchOptions.<String, String>builder()
-//                            .returnFields("stationId", "stationName", "arsId", "xLatitude", "yLongitude", "nextStationName")
+//                            .returnFields("stationId", "stationName", "arsId", "yLatitude", "xLongitude", "nextStationName")
 //                            .sortBy(SearchOptions.SortBy.asc("stationName"))
 //                            .build()
 //            );
 //            log.debug("검색 결과: {}", results);
 //
-//            return sortLocation(results, xLatitude, yLongitude);
+//            return sortLocation(results, yLatitude, xLongitude);
 //        } catch (RedisCommandExecutionException e) {
 //            log.error("Redis에서 검색 작업 중 오류가 발생했습니다.", e);
 //            throw new ServiceException(AUTOCOMPLETE_FAIL);
@@ -191,26 +191,26 @@ public class AutocompleteService {
      * 결과 목록을 사용자 위치를 기준으로 정렬한다.
      *
      * @param results    검색 결과
-     * @param xLatitude  사용자의 위도
-     * @param yLongitude 사용자의 경도
+     * @param yLatitude  사용자의 위도
+     * @param xLongitude 사용자의 경도
      * @return 거리에 따라 정렬된 버스 정류장 목록
      * @throws ServiceException 정렬 실패 시 발생
      */
-//    private List<SearchKeywordDTO> sortLocation(SearchResults<String, String> results, String xLatitude, String yLongitude) {
+//    private List<SearchKeywordDTO> sortLocation(SearchResults<String, String> results, String yLatitude, String xLongitude) {
 //        List<SearchKeywordDTO> busStops = new ArrayList<>();
 //        try {
 //            results.forEach(result -> {
 //                String stationId = result.get("stationId");
 //                String stationName = result.get("stationName");
 //                String arsId = result.get("arsId");
-//                String latitude = result.get("xLatitude");
-//                String longitude = result.get("yLongitude");
+//                String latitude = result.get("yLatitude");
+//                String longitude = result.get("xLongitude");
 //                String nextStationName = result.get("nextStationName");
 //
 //                busStops.add(new SearchKeywordDTO(stationId, stationName, arsId, latitude, longitude, nextStationName));
 //            });
 //
-//            busStops.sort(Comparator.comparingDouble(a -> a.distance(xLatitude, yLongitude)));
+//            busStops.sort(Comparator.comparingDouble(a -> a.distance(yLatitude, xLongitude)));
 //            log.debug("현위치에 가까운 버스 정류장 정렬: {}", busStops);
 //        } catch (Exception e) {
 //            log.error("정류장 목록 정렬 중 오류가 발생했습니다.", e);

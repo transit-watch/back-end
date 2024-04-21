@@ -11,6 +11,6 @@ public enum BusRouteEnumHeader {
     STATION_ID,
     ARS_ID,
     STATION_NAME,
-    X_LATITUDE,
-    Y_LONGITUDE
+    Y_LATITUDE,
+    X_LONGITUDE
 }

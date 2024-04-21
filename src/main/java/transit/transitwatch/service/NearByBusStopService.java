@@ -106,8 +106,8 @@ public class NearByBusStopService {
                     .stationId(item.getStationId())
                     .stationName(busStopInfo.getStationName())
                     .arsId(item.getArsId())
-                    .xLatitude(Double.parseDouble(item.getGpsX()))
-                    .yLongitude(Double.parseDouble(item.getGpsY()))
+                    .yLatitude(Double.parseDouble(item.getGpsY()))
+                    .xLongitude(Double.parseDouble(item.getGpsX()))
                     .distance(Integer.parseInt(item.getDist()))
                     .crowding(itisCdEnum.name())
                     .build();

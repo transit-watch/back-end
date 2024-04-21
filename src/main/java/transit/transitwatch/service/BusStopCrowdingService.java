@@ -77,8 +77,8 @@ public class BusStopCrowdingService {
             busStopCrowdingRepository.upsertBusStopCrowding(
                     dto.getItisCd(),
                     dto.getSendUtcTime(),
-                    dto.getYLongitude(),
-                    dto.getXLatitude(),
+                    dto.getXLongitude(),
+                    dto.getYLatitude(),
                     dto.getLinkId(),
                     dto.getArsId(),
                     dto.getSendPacketYear(),

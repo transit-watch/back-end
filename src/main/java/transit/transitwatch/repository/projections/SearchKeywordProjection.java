@@ -4,7 +4,7 @@ public interface SearchKeywordProjection {
     String getStationId();
     String getStationName();
     String getArsId();
-    String getXLatitude();
-    String getYLongitude();
+    String getYLatitude();
+    String getXLongitude();
     String getNextStationName();
 }
