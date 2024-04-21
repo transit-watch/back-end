@@ -2,6 +2,17 @@
 GRANT ALL PRIVILEGES ON transit.* TO 'root'@'%';
 GRANT ALL PRIVILEGES ON transit.* TO 'twuser'@'%';
 
+CREATE TABLE BUS_STOP_LOCATION (
+                                   ID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '자동 증가하는 기본 키 ID',
+                                   STATION_ID CHAR(9) UNIQUE COMMENT '정류장 고유 ID',
+                                   STATION_NAME VARCHAR(255) COMMENT '정류장 이름',
+                                   ARS_ID CHAR(5) COMMENT '정류장 번호',
+                                   Y_LATITUDE DOUBLE COMMENT '좌표Y 위도',
+                                   X_LONGITUDE DOUBLE COMMENT '좌표X 경도',
+                                   BUS_STOP_TYPE VARCHAR(30) COMMENT '버스 정류장 타입(중앙, 일반)'
+) COMMENT '버스 정류소 위치 정보 테이블';
+
+
 CREATE TABLE BUS_STOP_INFO (
                                ID BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '자동 증가하는 기본 키 ID',
                                STATION_ID CHAR(9) UNIQUE COMMENT '정류장 고유 ID',

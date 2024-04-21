@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 import transit.transitwatch.dto.common.CommonApiDTO;
 import transit.transitwatch.dto.near.ItemNear;
 import transit.transitwatch.dto.response.NearByBusStopResponse;
-import transit.transitwatch.entity.BusStopInfo;
+import transit.transitwatch.entity.BusStopLocation;
 import transit.transitwatch.exception.ServiceException;
 import transit.transitwatch.repository.BusStopInfoRepository;
+import transit.transitwatch.repository.BusStopLocationRepository;
 import transit.transitwatch.util.ApiJsonParser;
 import transit.transitwatch.util.ApiUtil;
 import transit.transitwatch.util.ItisCdEnum;
@@ -39,6 +40,7 @@ public class NearByBusStopService {
     private String serviceKey;
     private final BusStopCrowdingService busStopCrowdingService;
     private final BusStopInfoRepository busStopInfoRepository;
+    private final BusStopLocationRepository busStopLocationRepository;
 
     /**
      * 지정된 좌표와 반경 내에서 버스 정류장 목록을 조회한다.
@@ -98,16 +100,16 @@ public class NearByBusStopService {
             if(item.getArsId().equals("0")) return null;
 
             ItisCdEnum itisCdEnum = busStopCrowdingService.selectBusStopCrowding(item.getArsId());
-            BusStopInfo busStopInfo = busStopInfoRepository.findByArsId(item.getArsId());
+            BusStopLocation location = busStopLocationRepository.findByStationId(item.getStationId());
 
-            if(busStopInfo == null) return null;
+            if(location == null) return null;
 
             return NearByBusStopResponse.builder()
                     .stationId(item.getStationId())
-                    .stationName(busStopInfo.getStationName())
+                    .stationName(location.getStationName())
                     .arsId(item.getArsId())
-                    .yLatitude(Double.parseDouble(item.getGpsY()))
-                    .xLongitude(Double.parseDouble(item.getGpsX()))
+                    .yLatitude(location.getYLatitude())
+                    .xLongitude(location.getXLongitude())
                     .distance(Integer.parseInt(item.getDist()))
                     .crowding(itisCdEnum.name())
                     .build();
