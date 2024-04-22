@@ -1,23 +1,16 @@
 package transit.transitwatch.repository;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import transit.transitwatch.dto.SearchKeywordDTO;
 import transit.transitwatch.dto.response.RouteInfo;
 import transit.transitwatch.entity.QBusRoute;
-import transit.transitwatch.entity.QBusStopInfo;
 
 import java.util.List;
+import java.util.Optional;
 
-import static com.querydsl.jpa.JPAExpressions.select;
 import static transit.transitwatch.entity.QBusRoute.busRoute;
 import static transit.transitwatch.entity.QBusStopInfo.busStopInfo;
 
@@ -30,10 +23,10 @@ public class DetailBusStopRepositoryImpl implements DetailBusStopRepositoryCusto
      * 정류장 상세정보 조회 - 모든 노선 조회
      * */
     @Override
-    public List<RouteInfo> searchDetailBusStopList(String arsId) {
+    public Optional<List<RouteInfo>> searchDetailBusStopList(String arsId) {
         QBusRoute busRouteB = new QBusRoute("b");
 
-        return query
+        return Optional.ofNullable(query
                 .select(Projections.fields(RouteInfo.class,
                                 busRoute.routeId,
                                 busRoute.routeName,
@@ -50,7 +43,7 @@ public class DetailBusStopRepositoryImpl implements DetailBusStopRepositoryCusto
                 .join(busStopInfo)
                 .on(busRouteB.stationId.eq(busStopInfo.stationId))
                 .where(arsEq(arsId))
-                .fetch();
+                .fetch());
     }
 
     private BooleanExpression arsEq(String arsId) {

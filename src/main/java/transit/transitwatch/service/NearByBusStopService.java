@@ -5,14 +5,13 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import transit.transitwatch.dto.common.CommonApiDTO;
 import transit.transitwatch.dto.near.ItemNear;
 import transit.transitwatch.dto.response.NearByBusStopResponse;
 import transit.transitwatch.entity.BusStopLocation;
 import transit.transitwatch.exception.ServiceException;
-import transit.transitwatch.repository.BusStopInfoRepository;
-import transit.transitwatch.repository.BusStopLocationRepository;
 import transit.transitwatch.util.ApiJsonParser;
 import transit.transitwatch.util.ApiUtil;
 import transit.transitwatch.util.ItisCdEnum;
@@ -21,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static transit.transitwatch.util.ErrorCode.GET_URL_FAIL;
@@ -39,8 +39,7 @@ public class NearByBusStopService {
     @Value("${app.api.key.sbus}")
     private String serviceKey;
     private final BusStopCrowdingService busStopCrowdingService;
-    private final BusStopInfoRepository busStopInfoRepository;
-    private final BusStopLocationRepository busStopLocationRepository;
+    private final BusStopLocationService busStopLocationService;
 
     /**
      * 지정된 좌표와 반경 내에서 버스 정류장 목록을 조회한다.
@@ -50,6 +49,7 @@ public class NearByBusStopService {
      * @param radius 검색 반경(미터 단위)
      * @return 조회된 버스 정류장 목록을 포함하는 CommonApiDTO 객체를 반환한다.
      */
+    @Cacheable(cacheNames = "near", key = "#tmX.toString() + '_' + #tmY.toString() + '_' + #radius")
     public CommonApiDTO<ItemNear> getNearByBusStopApi(double tmX, double tmY, int radius) {
         URI url = getApiUrl(tmX, tmY, radius);
 
@@ -100,19 +100,18 @@ public class NearByBusStopService {
             if(item.getArsId().equals("0")) return null;
 
             ItisCdEnum itisCdEnum = busStopCrowdingService.selectBusStopCrowding(item.getArsId());
-            BusStopLocation location = busStopLocationRepository.findByStationId(item.getStationId());
+            Optional<BusStopLocation> location = busStopLocationService.selectBusStopLocation(item.getArsId());
 
-            if(location == null) return null;
-
-            return NearByBusStopResponse.builder()
+            return location.map(busStopLocation -> NearByBusStopResponse.builder()
                     .stationId(item.getStationId())
-                    .stationName(location.getStationName())
+                    .stationName(busStopLocation.getStationName())
                     .arsId(item.getArsId())
-                    .yLatitude(location.getYLatitude())
-                    .xLongitude(location.getXLongitude())
+                    .yLatitude(busStopLocation.getYLatitude())
+                    .xLongitude(busStopLocation.getXLongitude())
                     .distance(Integer.parseInt(item.getDist()))
                     .crowding(itisCdEnum.name())
-                    .build();
+                    .build()).orElse(null);
+
         } catch (NumberFormatException e) {
             log.error("좌표기반 근처 버스 정류장 정보 좌표 변환 중 오류가 발생했습니다. : {}", item, e);
             throw new ServiceException(SEARCH_FAIL);

@@ -16,20 +16,10 @@ import lombok.ToString;
 public class ItemNear {
     @JsonProperty("stationId")
     private String stationId;
-    @JsonProperty("stationNm")
-    private String stationNm;
-    @JsonProperty("gpsX")
-    private String gpsX;
-    @JsonProperty("gpsY")
-    private String gpsY;
-    @JsonProperty("posX")
-    private String posX;
-    @JsonProperty("posY")
-    private String posY;
-    @JsonProperty("stationTp")
-    private String stationTp;
+
     @JsonProperty("arsId")
     private String arsId;
+
     @JsonProperty("dist")
     private String dist;
 }

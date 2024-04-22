@@ -9,6 +9,7 @@ import transit.transitwatch.entity.BusStopInfo;
 import transit.transitwatch.repository.projections.SearchKeywordProjection;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BusStopInfoRepository extends JpaRepository<BusStopInfo, Long> {
@@ -34,10 +35,11 @@ public interface BusStopInfoRepository extends JpaRepository<BusStopInfo, Long> 
             "bsi.station_id AS stationId, " +
             "bsi.station_name AS stationName, " +
             "bsi.ars_id AS arsId, " +
-            "bsi.y_latitude AS yLatitude, " +
-            "bsi.x_longitude AS xLongitude, " +
+            "bsl.y_latitude AS yLatitude, " +
+            "bsl.x_longitude AS xLongitude, " +
             "next_bsi.station_name AS nextStationName " +
             "FROM bus_stop_info bsi " +
+            "LEFT JOIN bus_stop_location bsl ON bsl.station_id = bsi.station_id " +
             "LEFT JOIN (SELECT " +
             "br.station_id AS stationId," +
             " MAX(next_br.station_id) AS nextStationId " +
@@ -49,6 +51,6 @@ public interface BusStopInfoRepository extends JpaRepository<BusStopInfo, Long> 
             "ON bsi.station_id = next_direction.stationId " +
             "LEFT JOIN bus_stop_info next_bsi ON next_direction.nextStationId = next_bsi.station_id",
             nativeQuery = true)
-    List<SearchKeywordProjection> selectBusStopInfo();
+    Optional<List<SearchKeywordProjection>> selectBusStopInfo();
 
 }

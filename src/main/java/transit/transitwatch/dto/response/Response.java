@@ -82,6 +82,14 @@ public class Response<T> {
                 .build();
     }
 
+    public static Response<?> fail(String message) {
+        return Response.builder()
+                .success(false)
+                .status(FAIL)
+                .result(message)
+                .build();
+    }
+
     @Builder
     public Response(boolean success, String status, String code, String fail, String error, T result) {
         this.success = success;
