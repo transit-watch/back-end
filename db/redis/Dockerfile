@@ -1,6 +1,7 @@
-FROM redis:latest
+FROM redis/redis-stack-server:latest
 
-COPY conf.d /etc/redis/redis.conf
+COPY conf.d/redis-stack.conf /usr/local/etc/redis/redis.conf
 
-# requirepass 원하는 비번
 EXPOSE 6379
+
+CMD [ "/usr/bin/redis-stack-server", "/usr/local/etc/redis/redis.conf" ]

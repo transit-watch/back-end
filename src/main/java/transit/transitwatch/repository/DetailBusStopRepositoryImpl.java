@@ -1,15 +1,23 @@
 package transit.transitwatch.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import transit.transitwatch.dto.SearchKeywordDTO;
 import transit.transitwatch.dto.response.RouteInfo;
 import transit.transitwatch.entity.QBusRoute;
+import transit.transitwatch.entity.QBusStopInfo;
 
 import java.util.List;
 
+import static com.querydsl.jpa.JPAExpressions.select;
 import static transit.transitwatch.entity.QBusRoute.busRoute;
 import static transit.transitwatch.entity.QBusStopInfo.busStopInfo;
 
@@ -25,7 +33,7 @@ public class DetailBusStopRepositoryImpl implements DetailBusStopRepositoryCusto
     public List<RouteInfo> searchDetailBusStopList(String arsId) {
         QBusRoute busRouteB = new QBusRoute("b");
 
-        List<RouteInfo> routeInfoList = query
+        return query
                 .select(Projections.fields(RouteInfo.class,
                                 busRoute.routeId,
                                 busRoute.routeName,
@@ -43,7 +51,6 @@ public class DetailBusStopRepositoryImpl implements DetailBusStopRepositoryCusto
                 .on(busRouteB.stationId.eq(busStopInfo.stationId))
                 .where(arsEq(arsId))
                 .fetch();
-        return routeInfoList;
     }
 
     private BooleanExpression arsEq(String arsId) {

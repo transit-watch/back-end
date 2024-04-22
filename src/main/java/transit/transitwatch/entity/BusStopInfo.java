@@ -36,11 +36,11 @@ public class BusStopInfo {
     @Column(name = "LINK_ID", length = 10)
     private String linkId;
 
-    @Column(name = "X_LATITUDE")
-    private double xLatitude;
+    @Column(name = "Y_LATITUDE")
+    private double yLatitude;
 
-    @Column(name = "Y_LONGITUDE")
-    private double yLongitude;
+    @Column(name = "X_LONGITUDE")
+    private double xLongitude;
 
     @Column(name = "USE_YN")
     private char useYN; // 사용 여부 (1: 사용, 0: 미사용)
@@ -56,13 +56,13 @@ public class BusStopInfo {
     @Column(name = "EDIT_DATE")
     private Timestamp editDate;
 
-    public BusStopInfo(String stationId, String stationName, String arsId, String linkId, double xLatitude, double yLongitude, char useYN, char virtualBusStopYN) {
+    public BusStopInfo(String stationId, String stationName, String arsId, String linkId, double yLatitude, double xLongitude, char useYN, char virtualBusStopYN) {
         this.stationId = stationId;
         this.stationName = stationName;
         this.arsId = arsId;
         this.linkId = linkId;
-        this.xLatitude = xLatitude;
-        this.yLongitude = yLongitude;
+        this.yLatitude = yLatitude;
+        this.xLongitude = xLongitude;
         this.useYN = useYN;
         this.virtualBusStopYN = virtualBusStopYN;
     }

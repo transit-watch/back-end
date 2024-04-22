@@ -8,9 +8,9 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import java.io.IOException;
 import java.sql.Timestamp;
 
-/*
- * double 형식을 Timestamp로 변환
- * */
+/**
+ * JSON에서 double 형식의 시간 표현을 Timestamp 객체로 역직렬화하는 데 사용하는 클래스.
+ */
 public class DoubleTimestampDeserializer extends JsonDeserializer<Timestamp> {
 
     @Override

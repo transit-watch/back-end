@@ -16,18 +16,18 @@ public class NearByBusStopResponse {
     private String stationId;
     private String stationName;
     private String arsId;
-    private double xLatitude;
-    private double yLongitude;
+    private double yLatitude;
+    private double xLongitude;
     private int distance;
     private String crowding;
 
     @Builder
-    public NearByBusStopResponse(String stationId, String stationName, String arsId, double xLatitude, double yLongitude, int distance, String crowding) {
+    public NearByBusStopResponse(String stationId, String stationName, String arsId, double yLatitude, double xLongitude, int distance, String crowding) {
         this.stationId = stationId;
         this.stationName = stationName;
         this.arsId = arsId;
-        this.xLatitude = xLatitude;
-        this.yLongitude = yLongitude;
+        this.yLatitude = yLatitude;
+        this.xLongitude = xLongitude;
         this.distance = distance;
         this.crowding = crowding;
     }

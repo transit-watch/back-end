@@ -17,15 +17,15 @@ public interface BusStopCrowdingRepository extends JpaRepository<BusStopCrowding
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO bus_stop_crowding (itis_cd, send_utc_time, y_longitude, x_latitude, link_id, ars_id" +
+    @Query(value = "INSERT INTO bus_stop_crowding (itis_cd, send_utc_time, x_longitude, y_latitude, link_id, ars_id" +
             ", send_packet_year, send_packet_month, send_packet_day, send_packet_time, send_packet_milisecond, record_date, register_date, edit_date) " +
-            "VALUES (:itisCd, :sendUtcTime, :yLongitude, :xLatitude, :linkId, :arsId, :sendPacketYear," +
+            "VALUES (:itisCd, :sendUtcTime, :xLongitude, :yLatitude, :linkId, :arsId, :sendPacketYear," +
             " :sendPacketMonth, :sendPacketDay, :sendPacketTime, :sendPacketMilisecond" +
             ", :recordDate, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) AS new_val " +
             "ON DUPLICATE KEY UPDATE " +
             "send_utc_time = new_val.send_utc_time, " +
-            "y_longitude = new_val.y_longitude, " +
-            "x_latitude = new_val.x_latitude, " +
+            "x_longitude = new_val.x_longitude, " +
+            "y_latitude = new_val.y_latitude, " +
             "link_id = new_val.link_id, " +
             "send_packet_year = new_val.send_packet_year, " +
             "send_packet_month = new_val.send_packet_month, " +
@@ -34,7 +34,7 @@ public interface BusStopCrowdingRepository extends JpaRepository<BusStopCrowding
             "send_packet_milisecond = new_val.send_packet_milisecond, " +
             "record_date = new_val.record_date, " +
             "edit_date = CURRENT_TIMESTAMP", nativeQuery = true)
-    void upsertBusStopCrowding(String itisCd, Timestamp sendUtcTime, double yLongitude, double xLatitude, String linkId, String arsId, String sendPacketYear, String sendPacketMonth, String sendPacketDay, String sendPacketTime, String sendPacketMilisecond, Timestamp recordDate);
+    void upsertBusStopCrowding(String itisCd, Timestamp sendUtcTime, double xLongitude, double yLatitude, String linkId, String arsId, String sendPacketYear, String sendPacketMonth, String sendPacketDay, String sendPacketTime, String sendPacketMilisecond, Timestamp recordDate);
 
     Optional<BusStopCrowdingProjection> findByArsId(String arsId);
 

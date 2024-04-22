@@ -12,6 +12,6 @@ public class Station {
     private String nextStationName;
     private String arsId;
     private String crowding;
-    private double xLatitude;
-    private double yLongitude;
+    private double yLatitude;
+    private double xLongitude;
 }

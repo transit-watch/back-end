@@ -16,17 +16,17 @@ public class BusRouteDTO {
     private int routeOrder;
     private String stationId;
     private String arsId;
-    private double xLatitude;
-    private double yLongitude;
+    private double yLatitude;
+    private double xLongitude;
 
-    public BusRouteDTO(String routeId, String routeName, int routeOrder, String stationId, String arsId, double xLatitude, double yLongitude) {
+    public BusRouteDTO(String routeId, String routeName, int routeOrder, String stationId, String arsId, double yLatitude, double xLongitude) {
         this.routeId = routeId;
         this.routeName = routeName;
         this.routeOrder = routeOrder;
         this.stationId = stationId;
         this.arsId = arsId;
-        this.xLatitude = xLatitude;
-        this.yLongitude = yLongitude;
+        this.yLatitude = yLatitude;
+        this.xLongitude = xLongitude;
     }
 
     /*
@@ -39,8 +39,8 @@ public class BusRouteDTO {
                 routeOrder,
                 stationId,
                 arsId,
-                xLatitude,
-                yLongitude
+                yLatitude,
+                xLongitude
         );
     }
 }

@@ -23,11 +23,11 @@ public class NearByBusStop {
     @Column(name = "STATION_ID", length = 9)
     private String stationId;
 
-    @Column(name = "X_LATITUDE")
-    private double xLatitude;
+    @Column(name = "Y_LATITUDE")
+    private double yLatitude;
 
-    @Column(name = "Y_LONGITUDE")
-    private double yLongitude;
+    @Column(name = "X_LONGITUDE")
+    private double xLongitude;
 
     @Column(name = "ARS_ID", length = 5)
     private String arsId;
@@ -43,10 +43,10 @@ public class NearByBusStop {
     @Column(name = "EDIT_DATE")
     private Timestamp editDate;
 
-    public NearByBusStop(String stationId, double xLatitude, double yLongitude, String arsId, int distance) {
+    public NearByBusStop(String stationId, double yLatitude, double xLongitude, String arsId, int distance) {
         this.stationId = stationId;
-        this.xLatitude = xLatitude;
-        this.yLongitude = yLongitude;
+        this.yLatitude = yLatitude;
+        this.xLongitude = xLongitude;
         this.arsId = arsId;
         this.distance = distance;
     }

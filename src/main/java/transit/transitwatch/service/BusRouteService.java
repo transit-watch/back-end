@@ -1,11 +1,12 @@
 package transit.transitwatch.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import transit.transitwatch.entity.BusRoute;
+import transit.transitwatch.exception.ServiceException;
 import transit.transitwatch.repository.BusRouteRepository;
 import transit.transitwatch.util.ApiUtil;
 import transit.transitwatch.util.BusRouteEnumHeader;
@@ -17,9 +18,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
+import static transit.transitwatch.util.ErrorCode.FILE_DOWNLOAD_FAIL;
+import static transit.transitwatch.util.ErrorCode.FILE_SAVE_FAIL;
+
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class BusRouteService {
@@ -30,59 +33,77 @@ public class BusRouteService {
     @Value("${app.file.path}")
     private String filePath;
 
-    /*
-     * 버스 노선 정보 insert
-     * */
+    /**
+     * 지정된 파일 이름으로 버스 노선 정보 파일을 저장한다.
+     * 파일 다운로드 실패 시 이전 달의 파일을 시도하고, 그마저 실패하면 ServiceException을 발생시킨다.
+     *
+     * @param fileName 저장할 파일 이름
+     * @throws ServiceException 파일 다운로드 또는 파일 저장 실패 시 발생
+     */
     @Transactional
-    public void saveBusRouteFile(String fileName) throws Exception {
-
-        // 현재 3월 기준 파일 아이디가 26이라 한달에 1씩 증가 시키기. 업로드 주기 첫 주
+    public void saveBusRouteFile(String fileName){
+        // 현재 3월 기준 파일 아이디가 26이라 한달에 1씩 증가. 업로드 주기 첫 주
         LocalDate currentDate = LocalDate.now();
         int currentMonth = currentDate.getMonth().getValue();
         int fileId = currentMonth + 23;
 
         String busRouteUrl = getBusRouteUrl(fileId);
+        boolean fileDownloaded = apiUtil.fileDownload(busRouteUrl, "bus_route.xlsx");
 
-        // 파일 다운로드
-        boolean fileYN = apiUtil.fileDownload(busRouteUrl, "bus_route.xlsx");
-        if (!fileYN) {
+        if (!fileDownloaded) {
             busRouteUrl = getBusRouteUrl(fileId - 1);
-            apiUtil.fileDownload(busRouteUrl, "bus_route.xlsx");
+            fileDownloaded = apiUtil.fileDownload(busRouteUrl, "bus_route.xlsx");
+            if (!fileDownloaded) {
+                log.error("bus_route.xlsx 파일 다운로드 실패: url={}", busRouteUrl);
+                throw new ServiceException(FILE_DOWNLOAD_FAIL);
+            }
         }
-
-        // 파일 변환하기 (엑셀->csv)
         apiUtil.convertXlsxToCSV(filePath, "bus_route");
 
-        // 저장하기
         Path readPath = Paths.get(filePath + fileName);
-        List<BusRoute> busRouteList = new ArrayList<>();
 
         try (BufferedReader br = Files.newBufferedReader(readPath, Charset.forName("UTF-8"))) {
-
             Iterable<CSVRecord> records = apiUtil.getCsvRecords(br, BusRouteEnumHeader.class);
 
-            for (CSVRecord record : records) {
+            recordsProcess(records);
+        } catch (IOException e) {
+            log.error("버스 노선 정보 파일 저장 실패: {}", e.getMessage());
+            throw new ServiceException(FILE_SAVE_FAIL);
+        }
+    }
+
+    /**
+     * CSV 레코드를 처리하여 DB에 업데이트한다.
+     *
+     * @param records 처리할 CSV 레코드
+     */
+    private void recordsProcess(Iterable<CSVRecord> records) {
+        for (CSVRecord record : records) {
+            try {
                 String routeId = record.get(BusRouteEnumHeader.ROUTE_ID);
                 String routeName = record.get(BusRouteEnumHeader.ROUTE_NAME);
                 int routeOrder = Integer.parseInt(record.get(BusRouteEnumHeader.ROUTE_ORDER));
                 String stationId = record.get(BusRouteEnumHeader.STATION_ID);
                 String arsId = record.get(BusRouteEnumHeader.ARS_ID);
-                double xLatitude = Double.parseDouble(record.get(BusRouteEnumHeader.X_LATITUDE));
-                double yLongitude = Double.parseDouble(record.get(BusRouteEnumHeader.Y_LONGITUDE));
+                double yLatitude = Double.parseDouble(record.get(BusRouteEnumHeader.Y_LATITUDE));
+                double xLongitude = Double.parseDouble(record.get(BusRouteEnumHeader.X_LONGITUDE));
 
-                busRouteRepository.upsertBusRoute(routeId, routeName, routeOrder, stationId, arsId, xLatitude, yLongitude);
+                busRouteRepository.upsertBusRoute(routeId, routeName, routeOrder, stationId, arsId, yLatitude, xLongitude);
+            } catch (Exception e) {
+                log.error("버스 노선 정보 레코드 파싱 실패: {}", record, e);
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
+    /**
+     * 버스 노선 정보 파일 다운로드 URL을 생성한다.
+     *
+     * @param fileId 파일 ID
+     * @return 생성된 URL
+     */
     private String getBusRouteUrl(int fileId) {
         // 서울시 버스 노선별 정류소 정보 파일 다운로드 URL
-        String busRouteUrl = "https://datafile.seoul.go.kr/bigfile/iot/inf/nio_download.do?infId=OA-1095&useCache=false&infSeq=2" +
-                "&seqNo=" + fileId +
-                "&seq=" + fileId;
-        return busRouteUrl;
+        return String.format("https://datafile.seoul.go.kr/bigfile/iot/inf/nio_download.do?infId=OA-1095&useCache=false&infSeq=2&seqNo=%d&seq=%d"
+                , fileId, fileId);
     }
 }
