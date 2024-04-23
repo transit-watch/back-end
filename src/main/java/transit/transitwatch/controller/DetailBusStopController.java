@@ -59,7 +59,7 @@ public class DetailBusStopController {
         if (!routeInfoList.isEmpty())
             direction = routeInfoList.getFirst().getDirection();
 
-        if (!location.isEmpty())
+        if (location.isEmpty())
             itisCdEnum = ItisCdEnum.NODATA;
 
         Station station = Station.builder()
