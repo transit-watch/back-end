@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import transit.transitwatch.dto.BusStopLocationDTO;
 import transit.transitwatch.dto.common.CommonApiDTO;
 import transit.transitwatch.dto.near.ItemNear;
 import transit.transitwatch.dto.response.NearByBusStopResponse;
-import transit.transitwatch.entity.BusStopLocation;
 import transit.transitwatch.exception.ServiceException;
 import transit.transitwatch.util.ApiJsonParser;
 import transit.transitwatch.util.ApiUtil;
@@ -20,7 +20,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static transit.transitwatch.util.ErrorCode.GET_URL_FAIL;
@@ -100,17 +99,17 @@ public class NearByBusStopService {
             if(item.getArsId().equals("0")) return null;
 
             ItisCdEnum itisCdEnum = busStopCrowdingService.selectBusStopCrowding(item.getArsId());
-            Optional<BusStopLocation> location = busStopLocationService.selectBusStopLocation(item.getArsId());
+            BusStopLocationDTO location = busStopLocationService.selectBusStopLocation(item.getArsId()).orElseGet(BusStopLocationDTO::new);
 
-            return location.map(busStopLocation -> NearByBusStopResponse.builder()
+            return NearByBusStopResponse.builder()
                     .stationId(item.getStationId())
-                    .stationName(busStopLocation.getStationName())
+                    .stationName(location.getStationName())
                     .arsId(item.getArsId())
-                    .yLatitude(busStopLocation.getYLatitude())
-                    .xLongitude(busStopLocation.getXLongitude())
+                    .yLatitude(location.getYLatitude())
+                    .xLongitude(location.getXLongitude())
                     .distance(Integer.parseInt(item.getDist()))
                     .crowding(itisCdEnum.name())
-                    .build()).orElse(null);
+                    .build();
 
         } catch (NumberFormatException e) {
             log.error("좌표기반 근처 버스 정류장 정보 좌표 변환 중 오류가 발생했습니다. : {}", item, e);

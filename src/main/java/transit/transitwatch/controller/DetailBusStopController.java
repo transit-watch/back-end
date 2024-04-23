@@ -9,17 +9,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import transit.transitwatch.dto.BusStopLocationDTO;
 import transit.transitwatch.dto.response.*;
-import transit.transitwatch.entity.BusStopLocation;
 import transit.transitwatch.service.BusStopCrowdingService;
 import transit.transitwatch.service.BusStopLocationService;
 import transit.transitwatch.service.DetailBusStopService;
 import transit.transitwatch.util.ItisCdEnum;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static transit.transitwatch.util.ItisCdEnum.NODATA;
+import java.util.Optional;
 
 /**
  * 버스 정류장 상세 정보 제공 컨트롤러.
@@ -50,26 +48,25 @@ public class DetailBusStopController {
      */
     @GetMapping("/api/v1/bus-stops/detail/{arsId}")
     public Response<DetailBusStopResponse> detailBusStop(@PathVariable("arsId") @Size(min = 5, max = 5) @Positive @NotNull String arsId) {
-        BusStopLocation location = busStopLocationService.selectBusStopLocation(arsId).orElse(null);
-        if (location == null)
-            return (Response<DetailBusStopResponse>) Response.fail(NODATA.name());
-
+        Optional<BusStopLocationDTO> location = busStopLocationService.selectBusStopLocation(arsId);
         List<RouteInfo> routeInfoList = detailBusStopService.getDetailBusStop(arsId);
-
-        List<CombineArrivalRoute> combineArrivalRouteList = new ArrayList<>();
-        String direction = "";
-        if (!routeInfoList.isEmpty()) {
-            List<ArrivalInfo> arrivalInfoList = detailBusStopService.getArrivalInfo(routeInfoList);
-            combineArrivalRouteList = detailBusStopService.getCombineRoute(routeInfoList, arrivalInfoList);
-            direction = routeInfoList.getFirst().getDirection();
-        }
+        List<ArrivalInfo> arrivalInfoList = detailBusStopService.getArrivalInfo(routeInfoList);
+        List<CombineArrivalRoute> combineArrivalRouteList = detailBusStopService.getCombineRoute(routeInfoList, arrivalInfoList);
         ItisCdEnum itisCdEnum = busStopCrowdingService.selectBusStopCrowding(arsId);
+
+        String direction = "";
+
+        if (!routeInfoList.isEmpty())
+            direction = routeInfoList.getFirst().getDirection();
+
+        if (!location.isEmpty())
+            itisCdEnum = ItisCdEnum.NODATA;
 
         Station station = Station.builder()
                 .arsId(arsId)
-                .yLatitude(location.getYLatitude())
-                .xLongitude(location.getXLongitude())
-                .stationName(location.getStationName())
+                .yLatitude(location.get().getYLatitude())
+                .xLongitude(location.get().getXLongitude())
+                .stationName(location.get().getStationName())
                 .nextStationName(direction)
                 .crowding(itisCdEnum.name())
                 .build();
