@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import transit.transitwatch.dto.arrival.ItemArrival;
 import transit.transitwatch.dto.common.CommonApiDTO;
@@ -30,13 +31,14 @@ public class BusArrivalService {
     private String serviceKey;
 
     /**
-     * 주어진 버스 정류장, 노선 및 순서에 대한 도착 시간 및 혼잡도 정보를 API로부터 조회한다.
+     * 버스 정류장에 정차하는 버스의 도착 시간, 버스 내부 혼잡도 정보를 API로부터 조회한다.
      *
      * @param stId       정류장 ID
      * @param busRouteId 버스 노선 ID
      * @param ord        순서
      * @return 도착 정보를 포함하는 DTO
      */
+    @Cacheable(cacheNames = "arrival", key = "#stId + '_' + #busRouteId + '_' + #ord")
     public CommonApiDTO<ItemArrival> getBusArrivalInformationApi(String stId, String busRouteId, int ord) {
         URI url = getApiUrl(stId, busRouteId, ord);
 
