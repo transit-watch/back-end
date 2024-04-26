@@ -1,2 +1,2 @@
 == BusStopCrowdingController
-operation::bus-stop-crowding-controller-test/bus-stop-crowding-test[snippets="http-request,http-response"]
+operation::bus-stop-crowding-controller-test/test-save-bus-stop-crowding[snippets="http-request,http-response"]

@@ -437,31 +437,391 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 </head>
-<body class="book">
+<body class="book toc2 toc-left">
 <div id="header">
 <h1>Transit Watch REST Docs</h1>
 <div class="details">
 <span id="revnumber">version 0.0.1-SNAPSHOT</span>
 </div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_autocompletecontroller">AutocompleteController</a>
+<ul class="sectlevel2">
+<li><a href="#_autocompletecontroller_http_request">HTTP request</a></li>
+<li><a href="#_autocompletecontroller_http_response">HTTP response</a></li>
+<li><a href="#_autocompletecontroller_http_request">HTTP request</a></li>
+<li><a href="#_autocompletecontroller_http_response">HTTP response</a></li>
+</ul>
+</li>
+<li><a href="#_busstopinfocontroller">BusStopInfoController</a>
+<ul class="sectlevel2">
+<li><a href="#_busstopinfocontroller_http_request">HTTP request</a></li>
+<li><a href="#_busstopinfocontroller_http_response">HTTP response</a></li>
+</ul>
+</li>
+<li><a href="#_busroutecontroller">BusRouteController</a>
+<ul class="sectlevel2">
+<li><a href="#_busroutecontroller_http_request">HTTP request</a></li>
+<li><a href="#_busroutecontroller_http_response">HTTP response</a></li>
+</ul>
+</li>
+<li><a href="#_busstopcrowdingcontroller">BusStopCrowdingController</a>
+<ul class="sectlevel2">
+<li><a href="#_busstopcrowdingcontroller_http_request">HTTP request</a></li>
+<li><a href="#_busstopcrowdingcontroller_http_response">HTTP response</a></li>
+</ul>
+</li>
+<li><a href="#_detailbusstopcontroller">DetailBusStopController</a>
+<ul class="sectlevel2">
+<li><a href="#_detailbusstopcontroller_http_request">HTTP request</a></li>
+<li><a href="#_detailbusstopcontroller_http_response">HTTP response</a></li>
+</ul>
+</li>
+<li><a href="#_nearbybusstopcontroller">NearByBusStopController</a>
+<ul class="sectlevel2">
+<li><a href="#_nearbybusstopcontroller_http_request">HTTP request</a></li>
+<li><a href="#_nearbybusstopcontroller_http_response">HTTP response</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="_autocompletecontroller">AutocompleteController</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::test.adoc[]
-== AutocompleteController
-operation::autocomplete-controller-test/search-bus-stop-info[snippets="http-request,http-response"]
-operation::autocomplete-controller-test/test-search-bus-stop-info[snippets="http-request,http-response"]
-== BusStopInfoController
-operation::bus-stop-info-controller-test/bus-stop-file-test[snippets="http-request,http-response"]
-== BusRouteController
-operation::bus-route-controller-test/bus-route-down[snippets="http-request,http-response"]
-== BusStopCrowdingController
-operation::bus-stop-crowding-controller-test/bus-stop-crowding-test[snippets="http-request,http-response"]
-== DetailBusStopController
-operation::detail-bus-stop-controller-test/detail-bus-stop[snippets="http-request,http-response"]
-== NearByBusStopController
-operation::near-by-bus-stop-controller-test/near-by-bus-stop-list[snippets="http-request,http-response"]</p>
+<div class="sect2">
+<h3 id="_autocompletecontroller_http_request">HTTP request</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/bus-stops/autocomplete?keyword=%EC%8B%9C%EC%B2%AD&amp;xLongitude=126.95584930&amp;yLatitude=37.53843986 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_autocompletecontroller_http_response">HTTP response</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 1742
+
+{
+  "success" : true,
+  "status" : "success",
+  "result" : [ {
+    "stationId" : "101000033",
+    "stationName" : "시청앞",
+    "arsId" : "02128",
+    "ylatitude" : "37.56219717",
+    "xlongitude" : "126.9764437",
+    "direction" : "프레스센터"
+  }, {
+    "stationId" : "101000038",
+    "stationName" : "시청.서소문청사",
+    "arsId" : "02135",
+    "ylatitude" : "37.56352484",
+    "xlongitude" : "126.9749539",
+    "direction" : "충정로역2호선"
+  }, {
+    "stationId" : "101000035",
+    "stationName" : "시청앞",
+    "arsId" : "02132",
+    "ylatitude" : "37.56276421",
+    "xlongitude" : "126.9761487",
+    "direction" : "숭례문.한국일보"
+  }, {
+    "stationId" : "101000279",
+    "stationName" : "시청역더플라자호텔",
+    "arsId" : "02699",
+    "ylatitude" : "37.5641562",
+    "xlongitude" : "126.9779059",
+    "direction" : "소공동웨스틴조선호텔"
+  }, {
+    "stationId" : "101000227",
+    "stationName" : "시청덕수궁",
+    "arsId" : "02662",
+    "ylatitude" : "37.5654923",
+    "xlongitude" : "126.9769657",
+    "direction" : "프레이저플레이스남대문"
+  }, {
+    "stationId" : "101900011",
+    "stationName" : "시청역",
+    "arsId" : "02503",
+    "ylatitude" : "37.56567062",
+    "xlongitude" : "126.9770029",
+    "direction" : "삼성본관앞"
+  }, {
+    "stationId" : "101000290",
+    "stationName" : "시청앞.덕수궁",
+    "arsId" : "02286",
+    "ylatitude" : "37.56621228",
+    "xlongitude" : "126.9768356",
+    "direction" : "시청.서소문청사"
+  }, {
+    "stationId" : "101000286",
+    "stationName" : "시청.서울신문사",
+    "arsId" : "02706",
+    "ylatitude" : "37.56829932",
+    "xlongitude" : "126.9773647",
+    "direction" : "광화문"
+  } ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_autocompletecontroller_http_request">HTTP request</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/bus-stops/autocomplete HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_autocompletecontroller_http_response">HTTP response</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 117
+
+{
+  "success" : true,
+  "status" : "success",
+  "result" : "Redis 자동완성 정류장 명 키 값 세팅 성공"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_busstopinfocontroller">BusStopInfoController</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_busstopinfocontroller_http_request">HTTP request</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/bus-stops/info HTTP/1.1
+Host: localhost:8080
+Content-Type: application/x-www-form-urlencoded</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_busstopinfocontroller_http_response">HTTP response</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 133
+
+{
+  "success" : true,
+  "status" : "success",
+  "result" : "버스 정류장 정보 CSV 파일 다운로드 -&gt; DB에 저장 성공"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_busroutecontroller">BusRouteController</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_busroutecontroller_http_request">HTTP request</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/bus-stops/route HTTP/1.1
+Host: localhost:8080
+Content-Type: application/x-www-form-urlencoded</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_busroutecontroller_http_response">HTTP response</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 155
+
+{
+  "success" : true,
+  "status" : "success",
+  "result" : "버스 노선 경로 파일 다운로드 -&gt; XLSX 파일 CSV로 변환 -&gt; DB에 저장 성공"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_busstopcrowdingcontroller">BusStopCrowdingController</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_busstopcrowdingcontroller_http_request">HTTP request</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/bus-stops/crowding?pageNo=1&amp;numOfRows=30 HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_busstopcrowdingcontroller_http_response">HTTP response</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 123
+
+{
+  "success" : true,
+  "status" : "success",
+  "result" : "버스 정류장 혼잡도 API 조회 -&gt; DB에 저장 성공"
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_detailbusstopcontroller">DetailBusStopController</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_detailbusstopcontroller_http_request">HTTP request</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/bus-stops/detail/02286 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_detailbusstopcontroller_http_response">HTTP response</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 776
+
+{
+  "success" : true,
+  "status" : "success",
+  "result" : {
+    "station" : {
+      "stationName" : "시청앞.덕수궁",
+      "nextStationName" : "삼성본관앞",
+      "arsId" : "02286",
+      "crowding" : "EASYGOING",
+      "ylatitude" : 37.56621228,
+      "xlongitude" : 126.9768356
+    },
+    "busList" : [ {
+      "direction" : "삼성본관앞",
+      "stationId" : "101000290",
+      "arsId" : "02286",
+      "firstArrivalBusTime" : 30,
+      "secondArrivalBusTime" : 360,
+      "firstArrivalBusCrowding" : "삼성본관앞",
+      "secondArrivalBusCrowding" : null,
+      "firstArrivalTimeBefore" : null,
+      "secondArrivalTimeBefore" : "NODATA",
+      "busId" : "100100185",
+      "busName" : "7022",
+      "busOrder" : 34,
+      "busType" : "1"
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_nearbybusstopcontroller">NearByBusStopController</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_nearbybusstopcontroller_http_request">HTTP request</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/bus-stops/near?tmX=126.9784&amp;tmY=37.5665&amp;radius=500 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_nearbybusstopcontroller_http_response">HTTP response</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 789
+
+{
+  "success" : true,
+  "status" : "success",
+  "result" : [ {
+    "stationId" : "102900092",
+    "stationName" : "도원삼성래미안아파트단지내",
+    "arsId" : "03737",
+    "distance" : 48,
+    "crowding" : "EASYGOING",
+    "ylatitude" : 126.9553881353,
+    "xlongitude" : 37.5381983039
+  }, {
+    "stationId" : "102900096",
+    "stationName" : "도원삼성래미안아파트101동앞",
+    "arsId" : "03520",
+    "distance" : 75,
+    "crowding" : "EASYGOING",
+    "ylatitude" : 126.9562965631,
+    "xlongitude" : 37.5390222559
+  }, {
+    "stationId" : "102900097",
+    "stationName" : "도원삼성래미안아파트101동앞",
+    "arsId" : "03511",
+    "distance" : 77,
+    "crowding" : "EASYGOING",
+    "ylatitude" : 126.9562320809,
+    "xlongitude" : 37.5390685906
+  } ]
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -469,7 +829,7 @@ operation::near-by-bus-stop-controller-test/near-by-bus-stop-list[snippets="http
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-04-04 14:49:58 +0900
+Last updated 2024-04-27 00:05:37 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
