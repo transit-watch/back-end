@@ -11,10 +11,14 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${app.front.url}")
     private String frontUrl;
 
+    @Value("${app.front.url2}")
+    private String frontUrl2;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(frontUrl)
+                .allowedOrigins(frontUrl2)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
