@@ -68,7 +68,7 @@ public class BusRouteService {
             recordsProcess(records);
         } catch (IOException e) {
             log.error("버스 노선 정보 파일 저장 실패: {}", e.getMessage());
-            throw new ServiceException(FILE_SAVE_FAIL);
+            throw new ServiceException(e.getMessage(), FILE_SAVE_FAIL);
         }
     }
 

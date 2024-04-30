@@ -6,7 +6,7 @@ import transit.transitwatch.util.ErrorCode;
 @Getter
 public class CustomException extends RuntimeException {
     private ErrorCode errorCode;
-    public CustomException(ErrorCode errorCode) {
+    public CustomException(ErrorCode errorCode, String message) {
         this.errorCode = errorCode;
     }
 }

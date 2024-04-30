@@ -6,7 +6,7 @@ import transit.transitwatch.util.ErrorCode;
 @Getter
 public class ApiRequestException extends RuntimeException {
     private ErrorCode errorCode;
-    public ApiRequestException(ErrorCode errorCode) {
+    public ApiRequestException(ErrorCode errorCode, String message) {
         this.errorCode = errorCode;
     }
 }

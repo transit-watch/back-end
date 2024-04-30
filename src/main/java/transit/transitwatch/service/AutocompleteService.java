@@ -32,7 +32,6 @@ public class AutocompleteService {
     //    private final RedisModulesCommands<String, String> commands;
     private final TrieService trieService;
 
-
     /**
      * 주어진 키워드에 대한 자동완성 결과를 반환한다.
      *
@@ -46,7 +45,7 @@ public class AutocompleteService {
             return trie.autocomplete(keyword);
         } catch (Exception e) {
             log.error("자동완성 검색어 로딩 중 오류가 발생했습니다. 키워드 : {}", keyword, e);
-            throw new ServiceException(AUTOCOMPLETE_FAIL);
+            throw new ServiceException(e.getMessage(), AUTOCOMPLETE_FAIL);
         }
     }
 
@@ -74,7 +73,7 @@ public class AutocompleteService {
             });
         } catch (Exception e) {
             log.error("Mysql -> Redis로 버스 정류장 정보 만드는 중 오류가 발생했습니다.", e);
-            throw new ServiceException(AUTOCOMPLETE_BASEDATA_FAIL);
+            throw new ServiceException(e.getMessage(), AUTOCOMPLETE_BASEDATA_FAIL);
         }
     }
 
@@ -115,7 +114,7 @@ public class AutocompleteService {
             log.debug("현위치에 가까운 버스 정류장 정렬: {}", busStops);
         } catch (Exception e) {
             log.error("정류장 목록 정렬 중 오류가 발생했습니다.", e);
-            throw new ServiceException(AUTOCOMPLETE_FAIL);
+            throw new ServiceException("정류장 목록 정렬 중 오류가 발생했습니다." + e.getMessage(), AUTOCOMPLETE_FAIL);
         }
         return busStops.size() > 10 ? busStops.subList(0, 10) : busStops;
     }

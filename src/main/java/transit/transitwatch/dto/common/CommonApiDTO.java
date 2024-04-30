@@ -18,6 +18,10 @@ public class CommonApiDTO <T> {
     private ComMsgHeader comMsgHeader; // 공통메시지 헤더
     private MsgHeader msgHeader; // 메시지 헤더
     private MsgBody<T> msgBody ; // 본문 내용
+
+    public boolean isItemListNull() {
+        return msgBody != null && msgBody.getItemList() == null;
+    }
 }
 
 

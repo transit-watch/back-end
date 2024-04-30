@@ -28,7 +28,7 @@ public class DateTimestampDeserializer extends JsonDeserializer<Timestamp> {
             return new Timestamp(sdf.parse(date).getTime());
         } catch (ParseException e) {
             log.error("date 형식을 Timestamp로 파싱 중 오류가 발생했습니다. : 날짜={} ", date, e);
-            throw new CustomException(ErrorCode.PARSING_FAIL);
+            throw new CustomException(ErrorCode.PARSING_FAIL, e.getMessage());
         }
     }
 }
