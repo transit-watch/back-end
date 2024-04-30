@@ -9,7 +9,9 @@ CREATE TABLE BUS_STOP_LOCATION (
                                    ARS_ID CHAR(5) COMMENT '정류장 번호',
                                    Y_LATITUDE DOUBLE COMMENT '좌표Y 위도',
                                    X_LONGITUDE DOUBLE COMMENT '좌표X 경도',
-                                   BUS_STOP_TYPE VARCHAR(30) COMMENT '버스 정류장 타입(중앙, 일반)'
+                                   BUS_STOP_TYPE VARCHAR(30) COMMENT '버스 정류장 타입(중앙, 일반)',
+                                   REGISTER_DATE TIMESTAMP COMMENT '등록일시',
+                                   EDIT_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시'
 ) COMMENT '버스 정류소 위치 정보 테이블';
 
 

@@ -5,14 +5,13 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import transit.transitwatch.dto.BusStopLocationDTO;
 import transit.transitwatch.dto.common.CommonApiDTO;
 import transit.transitwatch.dto.near.ItemNear;
 import transit.transitwatch.dto.response.NearByBusStopResponse;
-import transit.transitwatch.entity.BusStopLocation;
 import transit.transitwatch.exception.ServiceException;
-import transit.transitwatch.repository.BusStopInfoRepository;
-import transit.transitwatch.repository.BusStopLocationRepository;
 import transit.transitwatch.util.ApiJsonParser;
 import transit.transitwatch.util.ApiUtil;
 import transit.transitwatch.util.ItisCdEnum;
@@ -39,8 +38,7 @@ public class NearByBusStopService {
     @Value("${app.api.key.sbus}")
     private String serviceKey;
     private final BusStopCrowdingService busStopCrowdingService;
-    private final BusStopInfoRepository busStopInfoRepository;
-    private final BusStopLocationRepository busStopLocationRepository;
+    private final BusStopLocationService busStopLocationService;
 
     /**
      * 지정된 좌표와 반경 내에서 버스 정류장 목록을 조회한다.
@@ -50,6 +48,7 @@ public class NearByBusStopService {
      * @param radius 검색 반경(미터 단위)
      * @return 조회된 버스 정류장 목록을 포함하는 CommonApiDTO 객체를 반환한다.
      */
+    @Cacheable(cacheNames = "near", key = "#tmX.toString() + '_' + #tmY.toString() + '_' + #radius")
     public CommonApiDTO<ItemNear> getNearByBusStopApi(double tmX, double tmY, int radius) {
         URI url = getApiUrl(tmX, tmY, radius);
 
@@ -100,9 +99,7 @@ public class NearByBusStopService {
             if(item.getArsId().equals("0")) return null;
 
             ItisCdEnum itisCdEnum = busStopCrowdingService.selectBusStopCrowding(item.getArsId());
-            BusStopLocation location = busStopLocationRepository.findByStationId(item.getStationId());
-
-            if(location == null) return null;
+            BusStopLocationDTO location = busStopLocationService.selectBusStopLocation(item.getArsId()).orElseGet(BusStopLocationDTO::new);
 
             return NearByBusStopResponse.builder()
                     .stationId(item.getStationId())
@@ -113,6 +110,7 @@ public class NearByBusStopService {
                     .distance(Integer.parseInt(item.getDist()))
                     .crowding(itisCdEnum.name())
                     .build();
+
         } catch (NumberFormatException e) {
             log.error("좌표기반 근처 버스 정류장 정보 좌표 변환 중 오류가 발생했습니다. : {}", item, e);
             throw new ServiceException(SEARCH_FAIL);

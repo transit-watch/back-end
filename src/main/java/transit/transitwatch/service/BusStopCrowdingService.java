@@ -4,6 +4,7 @@ package transit.transitwatch.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import transit.transitwatch.dto.BusStopCrowdingDTO;
@@ -114,11 +115,14 @@ public class BusStopCrowdingService {
 
     /**
      * 특정 ARS ID를 사용하여 버스 정류장의 혼잡도 정보를 조회한다.
-     * 조회된 혼잡도 정보가 없을 경우 기본적으로 '여유' 상태를 반환한다.
+     * 혼잡도 정보는 Redis 캐시에서 관리되며, 캐시된 값이 없는 경우 DB에서 조회하여 캐시한다.
      *
-     * @param arsId 조회할 ARS ID
-     * @return 혼잡도 상태 (enum)
+     * @param arsId 버스 정류장 고유 식별자 (ARS ID).
+     * @return {@link ItisCdEnum} 혼잡도를 나타내는 열거형. 혼잡도 정보가 없는 경우 {@code ItisCdEnum.EASYGOING}-'여유' 상태를 반환한다.
+     *
+     * @Cacheable 메서드의 결과를 "crowding" 캐시에 저장하고, 동일한 arsId로 요청이 있을 때 캐시된 데이터를 반환한다.
      */
+    @Cacheable(cacheNames = "crowding", key = "#arsId")
     public ItisCdEnum selectBusStopCrowding(String arsId) {
 
         return busStopCrowdingRepository.findByArsId(arsId)

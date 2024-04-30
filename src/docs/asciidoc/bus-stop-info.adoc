@@ -1,2 +1,2 @@
 == BusStopInfoController
-operation::bus-stop-info-controller-test/bus-stop-file-test[snippets="http-request,http-response"]
+operation::bus-stop-info-controller-test/test-save-bus-stop-info[snippets="http-request,http-response"]

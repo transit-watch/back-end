@@ -24,11 +24,10 @@ class NearByBusStopControllerTest extends AbstractRestDocsTests {
 
     @DisplayName("근처 정류장 목록 조회")
     @Test
-    void nearByBusStopList() throws Exception {
+    void testSearchNearByBusStop() throws Exception {
         double tmX = 126.9784;
         double tmY = 37.5665;
         int radius = 500;
-
 
         List<NearByBusStopResponse> fakeResponse = Arrays.asList(
                 new NearByBusStopResponse("102900092", "도원삼성래미안아파트단지내", "03737", 126.9553881353, 37.5381983039, 48, "EASYGOING"),
@@ -36,10 +35,8 @@ class NearByBusStopControllerTest extends AbstractRestDocsTests {
                 new NearByBusStopResponse("102900097", "도원삼성래미안아파트101동앞", "03511", 126.9562320809, 37.5390685906, 77, "EASYGOING")
                 );
 
-        // 서비스 메서드가 호출될 때 가짜 데이터를 반환하도록 설정
         given(nearByBusStopService.getNearByBusStopResponses(any())).willReturn(fakeResponse);
 
-        // 실제 HTTP 요청 테스트 및 응답 검증
         mockMvc.perform(get("/api/v1/bus-stops/near")
                         .param("tmX", String.valueOf(tmX))
                         .param("tmY", String.valueOf(tmY))

@@ -4,6 +4,7 @@ package transit.transitwatch.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.cache.annotation.Cacheable;
 import transit.transitwatch.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -110,11 +111,15 @@ public class BusStopInfoService {
 
     /**
      * 특정 ARS ID를 가진 버스 정류장 정보를 조회한다.
+     * 조회 결과는 정보는 Redis 캐시에서 관리되며, 캐시된 값이 없는 경우 DB에서 조회하여 캐시한다.
      *
      * @param arsId 조회할 ARS ID
      * @return 조회된 버스 정류장 정보
      * @throws ServiceException 정보 조회 실패 시 발생
+     *
+     * @Cacheable 메서드의 결과를 "busStop" 캐시에 저장하고, 동일한 arsId로 요청이 있을 때 캐시된 데이터를 반환한다.
      */
+    @Cacheable(cacheNames = "busStop", key = "#arsId")
     public BusStopInfo selectBusStopArsId(String arsId) {
         try {
             return busStopInfoRepository.findByArsId(arsId);

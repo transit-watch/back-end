@@ -458,11 +458,15 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 109
+Content-Length: 133
 
 {
   "success" : true,
+  "status" : "success",
   "result" : "버스 정류장 정보 CSV 파일 다운로드 -&gt; DB에 저장 성공"
 }</code></pre>
 </div>
@@ -474,7 +478,7 @@ Content-Length: 109
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-04-04 15:08:01 +0900
+Last updated 2024-04-18 15:45:46 +0900
 </div>
 </div>
 </body>

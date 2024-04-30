@@ -1,5 +1,6 @@
 package transit.transitwatch.controller;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,8 +17,9 @@ class BusStopInfoControllerTest extends AbstractRestDocsTests {
     @MockBean
     private BusStopInfoService busStopInfoService;
 
+    @DisplayName("버스 정류장 정보 파일저장")
     @Test
-    void busStopFileTest() throws Exception {
+    void testSaveBusStopInfo() throws Exception {
         mockMvc.perform(post("/api/v1/bus-stops/info"))
                 .andExpect(status().isOk());
 

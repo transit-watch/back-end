@@ -2,6 +2,7 @@ package transit.transitwatch.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import transit.transitwatch.service.BusStopInfoService;
@@ -13,6 +14,7 @@ public class BusStopInfoScheduler {
 
     private final BusStopInfoService busStopInfoService;
 
+    @Async
     // 분기 별 1회 업데이트 (월:1,4,7,10 / 시: 새벽 3시 / 둘째주 월요일
     @Scheduled(cron = "0 0 3 ? 1,4,7,10 2#2") // 초 분 시간 일 월 요일
     public void run() {

@@ -57,7 +57,8 @@ public class AutocompleteService {
      */
     public void loadBusStopInfoMysqlToRedis() {
         HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
-        List<SearchKeywordProjection> all = busStopInfoRepository.selectBusStopInfo();
+        List<SearchKeywordProjection> all = busStopInfoRepository.selectBusStopInfo().orElse(new ArrayList<>());
+
         try {
             all.forEach(busStop -> {
                 // hash에 정류장명, 경도, 위도, ars_id 전부 저장하기

@@ -2,6 +2,7 @@ package transit.transitwatch.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import transit.transitwatch.dto.arrival.ItemArrival;
 import transit.transitwatch.dto.common.CommonApiDTO;
@@ -37,15 +38,19 @@ public class DetailBusStopService {
 
     /**
      * 지정된 ARS ID를 사용하여 해당 버스 정류장의 상세 정보를 조회한다.
+     * 조회된 정보는 "detail" 캐시에 저장되며, 캐시된 값이 없는 경우 DB에서 조회하여 캐시한다.
      *
      * @param arsId 버스 정류장의 ARS ID
      * @return 조회된 버스 정류장의 노선 정보 리스트
      * @throws ServiceException 조회 중 오류 발생 시
+     *
+     * @Cacheable 메서드 결과를 "detail" 캐시에 저장하고, 동일한 arsId로 요청이 있을 때 캐시된 데이터를 반환한다.
      */
+    @Cacheable(cacheNames = "detail", key = "#arsId")
     public List<RouteInfo> getDetailBusStop(String arsId) {
 
         try {
-            return detailBusStopRepositoryCustom.searchDetailBusStopList(arsId);
+            return detailBusStopRepositoryCustom.searchDetailBusStopList(arsId).orElse(new ArrayList<>());
         } catch (Exception e) {
             log.error("ARS ID로 버스 정류장 상세 조회 중 오류가 발생했습니다. : ARS ID={}", arsId, e);
             throw new ServiceException(SEARCH_FAIL);

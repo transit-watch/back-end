@@ -447,7 +447,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="_autocompletecontroller_http_request">HTTP request</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/bus-stops/autocomplete/%EB%8F%84%EC%9B%90 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/bus-stops/autocomplete?keyword=%EC%8B%9C%EC%B2%AD&amp;xLongitude=126.95584930&amp;yLatitude=37.53843986 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
 </div>
@@ -458,12 +458,72 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 125
+Content-Length: 1742
 
 {
   "success" : true,
-  "result" : [ "도원삼성래미안아파트101동앞", "도원삼성래미안아파트단지내" ]
+  "status" : "success",
+  "result" : [ {
+    "stationId" : "101000033",
+    "stationName" : "시청앞",
+    "arsId" : "02128",
+    "ylatitude" : "37.56219717",
+    "xlongitude" : "126.9764437",
+    "direction" : "프레스센터"
+  }, {
+    "stationId" : "101000038",
+    "stationName" : "시청.서소문청사",
+    "arsId" : "02135",
+    "ylatitude" : "37.56352484",
+    "xlongitude" : "126.9749539",
+    "direction" : "충정로역2호선"
+  }, {
+    "stationId" : "101000035",
+    "stationName" : "시청앞",
+    "arsId" : "02132",
+    "ylatitude" : "37.56276421",
+    "xlongitude" : "126.9761487",
+    "direction" : "숭례문.한국일보"
+  }, {
+    "stationId" : "101000279",
+    "stationName" : "시청역더플라자호텔",
+    "arsId" : "02699",
+    "ylatitude" : "37.5641562",
+    "xlongitude" : "126.9779059",
+    "direction" : "소공동웨스틴조선호텔"
+  }, {
+    "stationId" : "101000227",
+    "stationName" : "시청덕수궁",
+    "arsId" : "02662",
+    "ylatitude" : "37.5654923",
+    "xlongitude" : "126.9769657",
+    "direction" : "프레이저플레이스남대문"
+  }, {
+    "stationId" : "101900011",
+    "stationName" : "시청역",
+    "arsId" : "02503",
+    "ylatitude" : "37.56567062",
+    "xlongitude" : "126.9770029",
+    "direction" : "삼성본관앞"
+  }, {
+    "stationId" : "101000290",
+    "stationName" : "시청앞.덕수궁",
+    "arsId" : "02286",
+    "ylatitude" : "37.56621228",
+    "xlongitude" : "126.9768356",
+    "direction" : "시청.서소문청사"
+  }, {
+    "stationId" : "101000286",
+    "stationName" : "시청.서울신문사",
+    "arsId" : "02706",
+    "ylatitude" : "37.56829932",
+    "xlongitude" : "126.9773647",
+    "direction" : "광화문"
+  } ]
 }</code></pre>
 </div>
 </div>
@@ -472,7 +532,7 @@ Content-Length: 125
 <h3 id="_autocompletecontroller_http_request">HTTP request</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/bus-stops/autocomplete HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/bus-stops/autocomplete HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
 </div>
@@ -483,11 +543,15 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 93
+Content-Length: 117
 
 {
   "success" : true,
+  "status" : "success",
   "result" : "Redis 자동완성 정류장 명 키 값 세팅 성공"
 }</code></pre>
 </div>
@@ -499,7 +563,7 @@ Content-Length: 93
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-04-04 15:06:27 +0900
+Last updated 2024-04-27 00:07:30 +0900
 </div>
 </div>
 </body>

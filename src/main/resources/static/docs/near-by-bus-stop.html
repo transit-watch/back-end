@@ -458,35 +458,39 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 765
+Content-Length: 789
 
 {
   "success" : true,
+  "status" : "success",
   "result" : [ {
     "stationId" : "102900092",
     "stationName" : "도원삼성래미안아파트단지내",
     "arsId" : "03737",
     "distance" : 48,
     "crowding" : "EASYGOING",
-    "yLatitude" : 126.9553881353,
-    "xLongitude" : 37.5381983039
+    "ylatitude" : 126.9553881353,
+    "xlongitude" : 37.5381983039
   }, {
     "stationId" : "102900096",
     "stationName" : "도원삼성래미안아파트101동앞",
     "arsId" : "03520",
     "distance" : 75,
     "crowding" : "EASYGOING",
-    "yLatitude" : 126.9562965631,
-    "xLongitude" : 37.5390222559
+    "ylatitude" : 126.9562965631,
+    "xlongitude" : 37.5390222559
   }, {
     "stationId" : "102900097",
     "stationName" : "도원삼성래미안아파트101동앞",
     "arsId" : "03511",
     "distance" : 77,
     "crowding" : "EASYGOING",
-    "yLatitude" : 126.9562320809,
-    "xLongitude" : 37.5390685906
+    "ylatitude" : 126.9562320809,
+    "xlongitude" : 37.5390685906
   } ]
 }</code></pre>
 </div>
@@ -498,7 +502,7 @@ Content-Length: 765
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-04-04 15:10:51 +0900
+Last updated 2024-04-18 15:45:46 +0900
 </div>
 </div>
 </body>
