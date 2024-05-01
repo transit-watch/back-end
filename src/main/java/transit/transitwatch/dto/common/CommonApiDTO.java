@@ -20,7 +20,7 @@ public class CommonApiDTO <T> {
     private MsgBody<T> msgBody ; // 본문 내용
 
     public boolean isItemListNull() {
-        return msgBody != null && msgBody.getItemList() == null;
+        return msgBody.getItemList() == null;
     }
 }
 

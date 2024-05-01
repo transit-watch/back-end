@@ -60,6 +60,8 @@ public class NearByBusStopService {
         if (headerMsg.contains("ERROR")) {
             log.error("공공 데이터 API 가져오기 실패: headerMsg={}", headerMsg);
             throw new ServiceException(headerMsg, API_REQUEST_FAIL);
+        } else if (headerMsg.contains("결과가 없습니다.")){
+            return new CommonApiDTO<>();
         }
         return commonApiDTO;
     }

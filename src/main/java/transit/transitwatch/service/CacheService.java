@@ -29,7 +29,7 @@ public class CacheService {
 
         if (data == null) {
             data = tSupplier.get();
-            if (data != null && data instanceof CommonApiDTO && !((CommonApiDTO)data).isItemListNull()) {
+            if (data instanceof CommonApiDTO && !((CommonApiDTO<?>)data).isItemListNull()) {
                 saveCache(key, data, timeout, timeUnit);
             }
         }
