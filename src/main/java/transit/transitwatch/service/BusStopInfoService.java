@@ -4,12 +4,11 @@ package transit.transitwatch.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
-import org.springframework.cache.annotation.Cacheable;
-import transit.transitwatch.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import transit.transitwatch.entity.BusStopInfo;
+import transit.transitwatch.exception.ServiceException;
 import transit.transitwatch.repository.BusStopInfoRepository;
 import transit.transitwatch.util.ApiUtil;
 import transit.transitwatch.util.BusStopInfoEnumHeader;
@@ -20,6 +19,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 import static transit.transitwatch.util.ErrorCode.*;
 
@@ -36,6 +36,7 @@ public class BusStopInfoService {
 
     @Value("${app.file.path}")
     private String filePath;
+    private final CacheService cacheService;
 
     /**
      * 버스 정류소 정보 파일을 다운로드하고 해당 파일을 파싱하여 DB에 저장한다.
@@ -63,7 +64,7 @@ public class BusStopInfoService {
             recordsProcess(records);
         } catch (IOException e) {
             log.error("버스 정류소 정보 파일 저장 실패: {}", e.getMessage());
-            throw new ServiceException(FILE_SAVE_FAIL);
+            throw new ServiceException(e.getMessage(), FILE_SAVE_FAIL);
         }
     }
     
@@ -95,7 +96,6 @@ public class BusStopInfoService {
         }
     }
 
-
     /**
      * 제공된 레코드가 DB에 저장될지 여부를 결정한다.
      * 사용하지 않는 정류장('0'), 가상 정류장('1'), 서울 정류장 구역 코드('0' 또는 '-')가 아닐 경우 레코드를 건너뛴다.
@@ -119,13 +119,18 @@ public class BusStopInfoService {
      *
      * @Cacheable 메서드의 결과를 "busStop" 캐시에 저장하고, 동일한 arsId로 요청이 있을 때 캐시된 데이터를 반환한다.
      */
-    @Cacheable(cacheNames = "busStop", key = "#arsId")
+//    @Cacheable(cacheNames = "busStop", key = "#arsId")
     public BusStopInfo selectBusStopArsId(String arsId) {
         try {
-            return busStopInfoRepository.findByArsId(arsId);
+            return cacheService.getCache("busStop:" + arsId,
+                    () -> getBusStopArsIdDB(arsId), 1, TimeUnit.HOURS);
         } catch (Exception e) {
             log.error("ARS ID로 버스 정류장 조회 실패: {}", arsId, e);
-            throw new ServiceException(SEARCH_FAIL);
+            throw new ServiceException(e.getMessage(), SEARCH_FAIL);
         }
+    }
+
+    private BusStopInfo getBusStopArsIdDB(String arsId) {
+        return busStopInfoRepository.findByArsId(arsId);
     }
 }

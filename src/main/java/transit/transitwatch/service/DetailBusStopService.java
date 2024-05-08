@@ -2,7 +2,6 @@ package transit.transitwatch.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import transit.transitwatch.dto.arrival.ItemArrival;
 import transit.transitwatch.dto.common.CommonApiDTO;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static transit.transitwatch.util.ErrorCode.API_REQUEST_FAIL;
@@ -35,6 +35,7 @@ public class DetailBusStopService {
     private final DetailBusStopRepositoryCustom detailBusStopRepositoryCustom;
     private final BusArrivalService busArrivalService;
     private final ApiUtil apiUtil;
+    private final CacheService cacheService;
 
     /**
      * 지정된 ARS ID를 사용하여 해당 버스 정류장의 상세 정보를 조회한다.
@@ -46,15 +47,28 @@ public class DetailBusStopService {
      *
      * @Cacheable 메서드 결과를 "detail" 캐시에 저장하고, 동일한 arsId로 요청이 있을 때 캐시된 데이터를 반환한다.
      */
-    @Cacheable(cacheNames = "detail", key = "#arsId")
-    public List<RouteInfo> getDetailBusStop(String arsId) {
+//    @Cacheable(cacheNames = "detail", key = "#arsId")
+//    public List<RouteInfo> getDetailBusStop(String arsId) {
+//        try {
+//            return detailBusStopRepositoryCustom.searchDetailBusStopList(arsId).orElse(new ArrayList<>());
+//        } catch (Exception e) {
+//            log.error("ARS ID로 버스 정류장 상세 조회 중 오류가 발생했습니다. : ARS ID={}", arsId, e);
+//            throw new ServiceException(e.getMessage(), SEARCH_FAIL);
+//        }
+//    }
 
+    public List<RouteInfo> getDetailBusStop(String arsId) {
         try {
-            return detailBusStopRepositoryCustom.searchDetailBusStopList(arsId).orElse(new ArrayList<>());
+            return cacheService.getCache("detail:" + arsId,
+                    () -> getRouteInfoDB(arsId), 1, TimeUnit.HOURS);
         } catch (Exception e) {
             log.error("ARS ID로 버스 정류장 상세 조회 중 오류가 발생했습니다. : ARS ID={}", arsId, e);
-            throw new ServiceException(SEARCH_FAIL);
+            throw new ServiceException(e.getMessage(), SEARCH_FAIL);
         }
+    }
+
+    private List<RouteInfo> getRouteInfoDB(String arsId) {
+        return detailBusStopRepositoryCustom.searchDetailBusStopList(arsId).orElse(new ArrayList<>());
     }
 
     /**
@@ -81,7 +95,7 @@ public class DetailBusStopService {
                     .build();
         } catch (Exception e) {
             log.error("도착 정보 생성 중 오류가 발생했습니다. : {}", item, e);
-            throw new ServiceException(API_REQUEST_FAIL);
+            throw new ServiceException(e.getMessage(), API_REQUEST_FAIL);
         }
     }
 
@@ -105,7 +119,7 @@ public class DetailBusStopService {
                 arrivalInfoList.addAll(tempArrivalInfoList);
             } catch (Exception e) {
                 log.error("도착 정보 API 호출 중 오류가 발생했습니다. 노선 정보: {}", busStop, e);
-                throw new ServiceException(API_REQUEST_FAIL);
+                throw new ServiceException(e.getMessage(), API_REQUEST_FAIL);
             }
         }
         return arrivalInfoList;

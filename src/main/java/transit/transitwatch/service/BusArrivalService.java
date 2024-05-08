@@ -29,6 +29,7 @@ public class BusArrivalService {
     private final ApiUtil apiUtil;
     @Value("${app.api.key.sbus}")
     private String serviceKey;
+    private final CacheService cacheService;
 
     /**
      * 버스 정류장에 정차하는 버스의 도착 시간, 버스 내부 혼잡도 정보를 API로부터 조회한다.
@@ -45,6 +46,16 @@ public class BusArrivalService {
         String apiResult = apiUtil.getApiUri(url);
         return apiJsonParser.busGoKrParser(apiResult, new TypeReference<>() {});
     }
+//    public CommonApiDTO<ItemArrival> getBusArrivalInformationApi(String stId, String busRouteId, int ord) {
+//        URI url = getApiUrl(stId, busRouteId, ord);
+//
+//        String apiResult = apiUtil.getApiUri(url);
+//        return cacheService.getCache("arrival:" + stId + "_" + busRouteId + "_" + ord,
+//                () -> apiJsonParser.busGoKrParser(apiResult, new TypeReference<>() {})
+//                , 30, TimeUnit.SECONDS);
+//    }
+
+
 
     /**
      * 주어진 정류장, 버스 노선 및 순서에 대한 API URL을 생성한다.
@@ -62,7 +73,7 @@ public class BusArrivalService {
             return new URI(url);
         } catch (URISyntaxException e) {
             log.error("Url 가져오기에 실패했습니다. Url = {}", url, e);
-            throw new ServiceException(GET_URL_FAIL);
+            throw new ServiceException(e.getMessage(), GET_URL_FAIL);
         }
     }
 }

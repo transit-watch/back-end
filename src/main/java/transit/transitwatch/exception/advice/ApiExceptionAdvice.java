@@ -48,7 +48,7 @@ public class ApiExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({ServiceException.class, CustomException.class})
     public Response<?> handleCustomServiceException(ServiceException ex) {
-        return Response.error("Internal Server Error: " + ex.getErrorCode().getDescription(), ex.getErrorCode().getCode());
+        return Response.error("Internal Server Error: " + ex.getErrorCode().getDescription() + " : " + ex.getMessage(), ex.getErrorCode().getCode());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -59,7 +59,7 @@ public class CacheConfig {
 
         return RedisCacheManager.builder(connectionFactory)
                 .withInitialCacheConfigurations(Map.of(
-                        "busStopLocation", longLived,
+                        "location", longLived,
                         "busStop", longLived,
                         "detail", longLived,
                         "near", longLived

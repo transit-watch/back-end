@@ -32,29 +32,25 @@ public interface BusStopInfoRepository extends JpaRepository<BusStopInfo, Long> 
     void upsertBusStopInfo(String stationId, String stationName, String arsId, String linkId, double yLatitude, double xLongitude, char useYN, char virtualBusStopYN);
 
     @Query(value = "SELECT " +
-            "bsi.station_id AS stationId, " +
-            "bsi.station_name AS stationName, " +
-            "bsi.ars_id AS arsId, " +
-            "CASE " +
-            "WHEN bsl.y_latitude IS NOT NULL THEN bsl.y_latitude " +
-            "ELSE bsi.y_latitude " +
-            "END AS yLatitude, " +
-            "CASE " +
-            "WHEN bsl.x_longitude IS NOT NULL THEN bsl.x_longitude " +
-            "ELSE bsi.x_longitude " +
-            "END AS xLongitude, " +
-            "next_bsi.station_name AS nextStationName " +
+            "    bsi.station_id AS stationId, " +
+            "    bsi.station_name AS stationName, " +
+            "    bsi.ars_id AS arsId, " +
+            "    IF(bsl.y_latitude IS NOT NULL, bsl.y_latitude, bsi.y_latitude) AS yLatitude, " +
+            "    IF(bsl.x_longitude IS NOT NULL, bsl.x_longitude, bsi.x_longitude) AS xLongitude, " +
+            "    next_bsi.station_name AS nextStationName " +
             "FROM bus_stop_info bsi " +
             "LEFT JOIN bus_stop_location bsl ON bsl.station_id = bsi.station_id " +
-            "LEFT JOIN (SELECT " +
-            "br.station_id AS stationId," +
-            " MAX(next_br.station_id) AS nextStationId " +
-            "FROM bus_route br " +
-            "LEFT JOIN bus_route next_br ON br.route_order + 1 = next_br.route_order " +
-            "AND br.route_id = next_br.route_id " +
-            "GROUP BY br.station_id" +
-            ") next_direction " +
-            "ON bsi.station_id = next_direction.stationId " +
+            "LEFT JOIN ( " +
+            "    SELECT " +
+            "        br.station_id AS stationId, " +
+            "        MAX(next_br.station_id) AS nextStationId " +
+            "    FROM " +
+            "        bus_route br " +
+            "    LEFT JOIN bus_route next_br ON br.route_order + 1 = next_br.route_order " +
+            "        AND br.route_id = next_br.route_id " +
+            "    GROUP BY " +
+            "        br.station_id " +
+            ") next_direction ON bsi.station_id = next_direction.stationId " +
             "LEFT JOIN bus_stop_info next_bsi ON next_direction.nextStationId = next_bsi.station_id",
             nativeQuery = true)
     Optional<List<SearchKeywordProjection>> selectBusStopInfo();

@@ -36,6 +36,8 @@ public class BusStopCrowdingService {
 
     @Value("${app.api.key.tdata}")
     private String apiKey;
+    private final CacheService cacheService;
+
 
     /**
      * 버스 정류장의 혼잡도 데이터를 API로부터 가져와 DB에 저장한다.
@@ -63,7 +65,7 @@ public class BusStopCrowdingService {
             return true;
         } catch (Exception e) {
             log.error("버스 정류장 혼잡도 데이터 수집 중 오류가 발생했습니다.", e);
-            throw new ServiceException(FILE_SAVE_FAIL);
+            throw new ServiceException("버스 정류장 혼잡도 데이터 수집 중 오류가 발생했습니다." + e.getMessage(), FILE_SAVE_FAIL);
         }
     }
 
@@ -90,7 +92,7 @@ public class BusStopCrowdingService {
                     dto.getRecordDate());
         } catch (DataAccessException e) {
             log.error("버스 정류장 데이터 저장에 실패했습니다.: 정류장 ARS ID {}", dto.getArsId(), e);
-            throw new ServiceException(FILE_SAVE_FAIL);
+            throw new ServiceException(e.getMessage(), FILE_SAVE_FAIL);
         }
     }
 
@@ -109,7 +111,7 @@ public class BusStopCrowdingService {
             return new URI(url);
         } catch (URISyntaxException e) {
             log.error("Url 가져오기에 실패했습니다. Url = {}", url, e);
-            throw new ServiceException(GET_URL_FAIL);
+            throw new ServiceException(e.getMessage(), GET_URL_FAIL);
         }
     }
 
@@ -124,10 +126,20 @@ public class BusStopCrowdingService {
      */
     @Cacheable(cacheNames = "crowding", key = "#arsId")
     public ItisCdEnum selectBusStopCrowding(String arsId) {
-
         return busStopCrowdingRepository.findByArsId(arsId)
                 .map(BusStopCrowdingProjection::getItisCd)
                 .map(apiUtil::getCrowdingEnum)
                 .orElse(ItisCdEnum.EASYGOING);
     }
+//    public ItisCdEnum selectBusStopCrowding(String arsId) {
+//        return cacheService.getCache("crowding:" + arsId,
+//                () -> getBusStopCrowdingDB(arsId), 1, TimeUnit.MINUTES);
+//    }
+//
+//    private ItisCdEnum getBusStopCrowdingDB(String arsId) {
+//        return busStopCrowdingRepository.findByArsId(arsId)
+//                .map(BusStopCrowdingProjection::getItisCd)
+//                .map(apiUtil::getCrowdingEnum)
+//                .orElse(ItisCdEnum.EASYGOING);
+//    }
 }

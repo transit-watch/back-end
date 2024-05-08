@@ -8,6 +8,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Slf4j
@@ -55,6 +56,70 @@ public class RedisConfig {
 
         return redisTemplate;
     }
+    @Bean
+    public RedisTemplate<String, Object> cacheRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+        return template;
+    }
+
+//    @Bean
+//    public RedisTemplate<String, Object> cacheRedisTemplate(RedisConnectionFactory connectionFactory) {
+//        RedisTemplate<String, Object> template = new RedisTemplate<>();
+//        template.setConnectionFactory(connectionFactory);
+//
+//        PolymorphicTypeValidator typeValidator = BasicPolymorphicTypeValidator
+//                .builder()
+//                .allowIfSubType(Object.class)
+//                .build();
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        objectMapper.activateDefaultTyping(typeValidator, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+//
+//        SimpleModule module = new SimpleModule();
+//        // Enum 직렬화 설정
+//        module.addSerializer(Enum.class, new JsonSerializer<>() {
+//            @Override
+//            public void serialize(Enum value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+//                gen.writeStartObject();
+//                gen.writeStringField("@class", value.getDeclaringClass().getName());
+//                gen.writeStringField("name", value.name());
+//                gen.writeEndObject();
+//            }
+//        });
+//        // Enum 역직렬화 설정
+//        module.addDeserializer(Enum.class, new JsonDeserializer<>() {
+//            @Override
+//            public Enum deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+//                JsonNode node = p.getCodec().readTree(p);
+//                String className = node.get("@class").asText();
+//                String name = node.get("name").asText();
+//                try {
+//                    Class<?> clazz = Class.forName(className);
+//                    if (clazz.isEnum()) {
+//                        @SuppressWarnings("unchecked")
+//                        Class<? extends Enum> enumClass = (Class<? extends Enum>) clazz;
+//                        return Enum.valueOf(enumClass, name);
+//                    } else {
+//                        throw new IllegalArgumentException("Enum 타입이 아닙니다.");
+//                    }
+//                } catch (ClassNotFoundException e) {
+//                    throw new IOException("Enum 클래스를 찾을 수 없습니다.", e);
+//                }
+//            }
+//        });
+//
+//        objectMapper.registerModule(module);
+//
+//        template.setKeySerializer(new StringRedisSerializer());
+//        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+//
+//        return template;
+//    }
 
     /**
      * Redis Modules를 사용하여 Redis 명령을 실행하기 위한 RedisModulesCommands 인스턴스를 생성하고 반환한다.
